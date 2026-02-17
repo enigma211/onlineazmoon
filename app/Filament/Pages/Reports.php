@@ -101,6 +101,26 @@ class Reports extends Page implements HasTable
 
     protected function makeLocalizedDatePicker(string $name, string $label, Carbon $default)
     {
+        $jalaliComponentClasses = [
+            'Ariaieboy\\FilamentJalaliDatetimepicker\\Forms\\Components\\JalaliDatePicker',
+            'Bezhansalleh\\FilamentJalaliDatepicker\\Forms\\Components\\JalaliDatePicker',
+        ];
+
+        foreach ($jalaliComponentClasses as $componentClass) {
+            if (class_exists($componentClass)) {
+                $component = call_user_func([$componentClass, 'make'], $name)
+                    ->label($label)
+                    ->required()
+                    ->default($default->format('Y-m-d'));
+
+                if (method_exists($component, 'displayFormat')) {
+                    $component = $component->displayFormat('Y/m/d');
+                }
+
+                return $component;
+            }
+        }
+
         $component = Forms\Components\DatePicker::make($name)
             ->label($label)
             ->displayFormat('Y/m/d')
