@@ -22,7 +22,13 @@ class EducationFieldSeeder extends Seeder
         ];
 
         foreach ($fields as $field) {
-            EducationField::create($field);
+            EducationField::updateOrCreate(
+                ['name' => $field['name']],
+                [
+                    'sort_order' => $field['sort_order'],
+                    'is_active' => true,
+                ]
+            );
         }
     }
 }

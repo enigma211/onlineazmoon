@@ -28,6 +28,8 @@ class EducationField extends Model
         return static::where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values();
     }
 }
