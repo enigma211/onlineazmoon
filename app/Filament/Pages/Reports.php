@@ -111,11 +111,10 @@ class Reports extends Page implements HasTable
                 $component = call_user_func([$componentClass, 'make'], $name)
                     ->label($label)
                     ->required()
+                    ->native(false)
+                    ->format('Y-m-d')
+                    ->displayFormat('Y/m/d')
                     ->default($default->format('Y-m-d'));
-
-                if (method_exists($component, 'displayFormat')) {
-                    $component = $component->displayFormat('Y/m/d');
-                }
 
                 return $component;
             }
@@ -123,6 +122,8 @@ class Reports extends Page implements HasTable
 
         $component = Forms\Components\DatePicker::make($name)
             ->label($label)
+            ->native(false)
+            ->format('Y-m-d')
             ->displayFormat('Y/m/d')
             ->required()
             ->default($default->format('Y-m-d'));
