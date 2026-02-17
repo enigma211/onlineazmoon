@@ -98,11 +98,25 @@ $register = function () {
         </div>
 
         <div class="pt-2">
-            <button type="button" wire:click="register" class="w-full inline-flex justify-center items-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 border border-transparent rounded-xl font-semibold text-xs text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-lg shadow-red-500/30">
-                <span wire:loading.remove>ثبت نام در سامانه</span>
-                <span wire:loading>در حال پردازش...</span>
+            <button 
+                type="button" 
+                wire:click="register" 
+                onclick="console.log('Button clicked'); return false;"
+                class="w-full inline-flex justify-center items-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 border border-transparent rounded-xl font-semibold text-xs text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-lg shadow-red-500/30">
+                <span wire:loading.remove wire:target="register">ثبت نام در سامانه</span>
+                <span wire:loading wire:target="register">در حال پردازش...</span>
             </button>
         </div>
+        
+        @if ($errors->any())
+            <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <ul class="text-sm text-red-600 space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <div class="text-center pt-2">
             <span class="text-sm text-gray-500">قبلاً ثبت نام کرده‌اید؟ </span>
