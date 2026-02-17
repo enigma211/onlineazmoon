@@ -25,22 +25,22 @@ $login = function () {
 <div>
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form wire:submit="login" class="space-y-4">
+    <form wire:submit.prevent="login" class="space-y-4">
         <div>
             <x-input-label for="mobile" value="شماره موبایل" />
-            <x-text-input wire:model="form.mobile" id="mobile" class="block mt-1 w-full" type="number" name="mobile" required autofocus autocomplete="tel" placeholder="0912xxxxxxx" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)" />
+            <x-text-input wire:model="form.mobile" id="mobile" class="block mt-1 w-full" type="text" required autofocus autocomplete="tel" placeholder="0912xxxxxxx" maxlength="11" pattern="[0-9]{11}" inputmode="numeric" />
             <x-input-error :messages="$errors->get('form.mobile')" class="mt-2" />
         </div>
 
         <div>
             <x-input-label for="password" value="رمز عبور" />
-            <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" placeholder="رمز عبور خود را وارد کنید" />
+            <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full" type="password" required autocomplete="current-password" placeholder="رمز عبور خود را وارد کنید" />
             <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-between">
             <label for="remember" class="inline-flex items-center">
-                <input wire:model="form.remember" id="remember" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                <input wire:model="form.remember" id="remember" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
                 <span class="ms-2 text-sm text-gray-600">مرا به خاطر بسپار</span>
             </label>
             
