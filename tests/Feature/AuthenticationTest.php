@@ -71,7 +71,7 @@ test('registration is disabled when setting is off', function () {
     // Mock the settings cache
     Cache::put('site_settings', ['enable_registration' => false]);
 
-    $response = $this->get('/register');
+    $response = $this->get(route('register'));
 
     $response->assertForbidden();
 });
@@ -79,7 +79,29 @@ test('registration is disabled when setting is off', function () {
 test('registration is enabled when setting is on', function () {
     Cache::put('site_settings', ['enable_registration' => true]);
 
-    $response = $this->get('/register');
+    $response = $this->get(route('register'));
 
     $response->assertOk();
+});
+
+test('guest homepage contains login and register links to auth routes when registration is enabled', function () {
+    Cache::put('site_settings', ['enable_registration' => true]);
+
+    $response = $this->get('/');
+
+    $response
+        ->assertOk()
+        ->assertSee('href="'.route('login').'"', false)
+        ->assertSee('href="'.route('register').'"', false);
+});
+
+test('guest homepage hides register link when registration is disabled', function () {
+    Cache::put('site_settings', ['enable_registration' => false]);
+
+    $response = $this->get('/');
+
+    $response
+        ->assertOk()
+        ->assertSee('href="'.route('login').'"', false)
+        ->assertDontSee('href="'.route('register').'"', false);
 });

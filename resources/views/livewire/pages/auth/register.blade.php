@@ -100,8 +100,10 @@ $register = function () {
         <div class="pt-2">
             <button 
                 type="submit"
-                class="w-full inline-flex justify-center items-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 border border-transparent rounded-xl font-semibold text-xs text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-lg shadow-red-500/30">
-                <span wire:loading.remove wire:target="register">ثبت نام در سامانه</span>
+                wire:loading.attr="disabled"
+                wire:target="register"
+                class="w-full inline-flex justify-center items-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 border border-transparent rounded-xl font-semibold text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-lg shadow-red-500/30 disabled:opacity-70 disabled:cursor-not-allowed">
+                <span wire:loading.remove wire:target="register">ثبت‌نام در سامانه</span>
                 <span wire:loading wire:target="register">در حال پردازش...</span>
             </button>
         </div>

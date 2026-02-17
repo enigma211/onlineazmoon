@@ -275,9 +275,16 @@ server {
     add_header X-XSS-Protection "1; mode=block" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "no-referrer-when-downgrade" always;
-    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+    # مهم: برای Livewire/Alpine باید unsafe-eval در script-src مجاز باشد
+    # اگر CSP را در خود Laravel (Middleware) تنظیم کرده‌اید، این هدر را در Nginx حذف کنید تا تداخل ایجاد نشود.
+    add_header Content-Security-Policy "default-src 'self' https: http: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:; style-src 'self' 'unsafe-inline' https: http:; img-src 'self' data: https: http:; font-src 'self' data: https: http:; connect-src 'self' https: http: ws: wss:;" always;
 }
 ```
+
+نکته مهم برای CDN ابرآروان:
+
+- اگر در پنل CDN هدر `Content-Security-Policy` جداگانه ست کرده‌اید، یا آن را حذف کنید یا دقیقاً با سیاست بالا یکسان کنید.
+- ست شدن همزمان چند CSP متفاوت (مثلاً یکی از Nginx و یکی از CDN) باعث می‌شود مرورگر سخت‌گیرانه‌ترین حالت را اعمال کند و Livewire روی «در حال پردازش» بماند.
 
 فعال‌سازی سایت و تست کانفیگ:
 
