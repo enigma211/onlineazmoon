@@ -1,31 +1,32 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="rtl">
+<html lang="fa" dir="rtl">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>سامانه آزمون‌های دفتر مقررات ملی ساختمان</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
-
-        <!-- Scripts -->
+        <link href="{{ asset('fonts/vazirmatn.css') }}" rel="stylesheet" type="text/css" />
+        <style>
+            body { font-family: 'Vazirmatn', sans-serif; }
+        </style>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/" wire:navigate>
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+    <body class="bg-gray-50 flex items-center justify-center min-h-screen bg-[url('https://laravel.com/assets/img/welcome/background.svg')] bg-cover bg-center p-4">
+        <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 sm:p-8 text-center border border-gray-100">
+            <div class="mb-6 sm:mb-8 flex justify-center">
+                <img src="{{ asset('images/logo.png') }}" alt="لوگو دفتر مقررات ملی ساختمان" class="h-24 sm:h-32 md:h-40 w-auto object-contain drop-shadow-sm">
             </div>
+            
+            <h1 class="text-2xl sm:text-3xl font-black text-gray-800 mb-2 sm:mb-3 leading-tight tracking-tight">
+                سامانه آزمون‌های
+            </h1>
+            <h2 class="text-lg sm:text-xl font-bold text-gray-600 mb-6 sm:mb-8 leading-relaxed">
+                دفتر مقررات ملی ساختمان
+            </h2>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
+            {{ $slot }}
         </div>
     </body>
 </html>

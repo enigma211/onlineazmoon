@@ -48,80 +48,68 @@ $register = function () {
 ?>
 
 <div>
-    <form wire:submit="register">
-        <!-- Name -->
+    <form wire:submit="register" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <x-input-label for="name" value="نام" />
+                <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" required autofocus autocomplete="name" placeholder="نام" />
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-input-label for="family" value="نام خانوادگی" />
+                <x-text-input wire:model="family" id="family" class="block mt-1 w-full" type="text" name="family" required autocomplete="family-name" placeholder="نام خانوادگی" />
+                <x-input-error :messages="$errors->get('family')" class="mt-2" />
+            </div>
+        </div>
+
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-
-        <!-- Family Name -->
-        <div class="mt-4">
-            <x-input-label for="family" :value="__('Family Name')" />
-            <x-text-input wire:model="family" id="family" class="block mt-1 w-full" type="text" name="family" required autocomplete="family-name" />
-            <x-input-error :messages="$errors->get('family')" class="mt-2" />
-        </div>
-
-        <!-- Mobile -->
-        <div class="mt-4">
-            <x-input-label for="mobile" :value="__('Mobile')" />
-            <x-text-input wire:model="mobile" id="mobile" class="block mt-1 w-full" type="text" name="mobile" required autocomplete="tel" />
-            <x-input-error :messages="$errors->get('mobile')" class="mt-2" />
-        </div>
-
-        <!-- National Code -->
-        <div class="mt-4">
-            <x-input-label for="national_code" :value="__('National Code')" />
-            <x-text-input wire:model="national_code" id="national_code" class="block mt-1 w-full" type="text" name="national_code" required />
+            <x-input-label for="national_code" value="کد ملی" />
+            <x-text-input wire:model="national_code" id="national_code" class="block mt-1 w-full" type="text" name="national_code" required placeholder="کد ملی 10 رقمی" />
             <x-input-error :messages="$errors->get('national_code')" class="mt-2" />
         </div>
 
-        <!-- Education Field -->
-        <div class="mt-4">
-            <x-input-label for="education_field" :value="__('Education Field')" />
-            <x-text-input wire:model="education_field" id="education_field" class="block mt-1 w-full" type="text" name="education_field" required />
+        <div>
+            <x-input-label for="mobile" value="شماره موبایل" />
+            <x-text-input wire:model="mobile" id="mobile" class="block mt-1 w-full" type="text" name="mobile" required autocomplete="tel" placeholder="0912xxxxxxx" />
+            <x-input-error :messages="$errors->get('mobile')" class="mt-2" />
+        </div>
+
+        <div>
+            <x-input-label for="education_field" value="رشته تحصیلی" />
+            <x-text-input wire:model="education_field" id="education_field" class="block mt-1 w-full" type="text" name="education_field" required placeholder="رشته تحصیلی" />
             <x-input-error :messages="$errors->get('education_field')" class="mt-2" />
         </div>
 
-        <!-- Birth Date -->
-        <div class="mt-4">
-            <x-input-label for="birth_date" :value="__('Birth Date')" />
+        <div>
+            <x-input-label for="birth_date" value="تاریخ تولد" />
             <x-text-input wire:model="birth_date" id="birth_date" class="block mt-1 w-full" type="date" name="birth_date" />
             <x-input-error :messages="$errors->get('birth_date')" class="mt-2" />
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input wire:model="password" id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
+        <div>
+            <x-input-label for="password" value="رمز عبور" />
+            <x-text-input wire:model="password" id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" placeholder="رمز عبور" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
+        <div>
+            <x-input-label for="password_confirmation" value="تکرار رمز عبور" />
+            <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="تکرار رمز عبور" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}" wire:navigate>
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
+        <div class="pt-2">
+            <x-primary-button class="w-full justify-center py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800">
+                ثبت نام در سامانه
             </x-primary-button>
+        </div>
+
+        <div class="text-center pt-2">
+            <span class="text-sm text-gray-500">قبلاً ثبت نام کرده‌اید؟ </span>
+            <a class="text-sm text-red-600 hover:text-red-700 font-bold" href="{{ route('login') }}" wire:navigate>
+                وارد شوید
+            </a>
         </div>
     </form>
 </div>

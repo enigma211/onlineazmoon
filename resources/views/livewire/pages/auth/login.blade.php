@@ -23,47 +23,45 @@ $login = function () {
 ?>
 
 <div>
-    <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form wire:submit="login">
-        <!-- Mobile -->
+    <form wire:submit="login" class="space-y-4">
         <div>
-            <x-input-label for="mobile" :value="__('Mobile')" />
-            <x-text-input wire:model="form.mobile" id="mobile" class="block mt-1 w-full" type="text" name="mobile" required autofocus autocomplete="tel" />
+            <x-input-label for="mobile" value="شماره موبایل" />
+            <x-text-input wire:model="form.mobile" id="mobile" class="block mt-1 w-full" type="text" name="mobile" required autofocus autocomplete="tel" placeholder="0912xxxxxxx" />
             <x-input-error :messages="$errors->get('form.mobile')" class="mt-2" />
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
+        <div>
+            <x-input-label for="password" value="رمز عبور" />
+            <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" placeholder="رمز عبور خود را وارد کنید" />
             <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
+        <div class="flex items-center justify-between">
             <label for="remember" class="inline-flex items-center">
                 <input wire:model="form.remember" id="remember" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                <span class="ms-2 text-sm text-gray-600">مرا به خاطر بسپار</span>
             </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
+            
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}" wire:navigate>
-                    {{ __('Forgot your password?') }}
+                <a class="text-sm text-gray-500 hover:text-red-600 transition-colors" href="{{ route('password.request') }}" wire:navigate>
+                    فراموشی رمز عبور؟
                 </a>
             @endif
+        </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
+        <div class="pt-2">
+            <x-primary-button class="w-full justify-center py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800">
+                ورود به سامانه
             </x-primary-button>
+        </div>
+
+        <div class="text-center pt-2">
+            <span class="text-sm text-gray-500">حساب کاربری ندارید؟ </span>
+            <a class="text-sm text-red-600 hover:text-red-700 font-bold" href="{{ route('register') }}" wire:navigate>
+                ثبت نام کنید
+            </a>
         </div>
     </form>
 </div>
