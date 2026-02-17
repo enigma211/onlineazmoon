@@ -25,7 +25,8 @@ $login = function () {
 <div>
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form wire:submit.prevent="login" class="space-y-4">
+    <form wire:submit.prevent="login" class="space-y-4" method="POST">
+        @csrf
         <div>
             <x-input-label for="mobile" value="شماره موبایل" />
             <x-text-input wire:model="form.mobile" id="mobile" class="block mt-1 w-full" type="text" required autofocus autocomplete="tel" placeholder="0912xxxxxxx" maxlength="11" pattern="[0-9]{11}" inputmode="numeric" />
