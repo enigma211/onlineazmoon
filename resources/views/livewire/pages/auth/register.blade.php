@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\EducationField;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +19,6 @@ state([
     'mobile' => '',
     'national_code' => '',
     'education_field' => '',
-    'birth_date' => '',
     'password' => '',
     'password_confirmation' => ''
 ]);
@@ -29,7 +29,6 @@ rules([
     'mobile' => ['required', 'string', 'max:11', 'unique:'.User::class],
     'national_code' => ['required', 'string', 'size:10', 'unique:'.User::class],
     'education_field' => ['required', 'string', 'max:255'],
-    'birth_date' => ['nullable', 'date'],
     'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
 ]);
 
@@ -65,19 +64,24 @@ $register = function () {
 
         <div>
             <x-input-label for="national_code" value="کد ملی" />
-            <x-text-input wire:model="national_code" id="national_code" class="block mt-1 w-full" type="text" name="national_code" required placeholder="کد ملی 10 رقمی" />
+            <x-text-input wire:model="national_code" id="national_code" class="block mt-1 w-full" type="number" name="national_code" required placeholder="کد ملی 10 رقمی" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)" />
             <x-input-error :messages="$errors->get('national_code')" class="mt-2" />
         </div>
 
         <div>
             <x-input-label for="mobile" value="شماره موبایل" />
-            <x-text-input wire:model="mobile" id="mobile" class="block mt-1 w-full" type="text" name="mobile" required autocomplete="tel" placeholder="0912xxxxxxx" />
+            <x-text-input wire:model="mobile" id="mobile" class="block mt-1 w-full" type="number" name="mobile" required autocomplete="tel" placeholder="0912xxxxxxx" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)" />
             <x-input-error :messages="$errors->get('mobile')" class="mt-2" />
         </div>
 
         <div>
             <x-input-label for="education_field" value="رشته تحصیلی" />
-            <x-text-input wire:model="education_field" id="education_field" class="block mt-1 w-full" type="text" name="education_field" required placeholder="رشته تحصیلی" />
+            <select wire:model="education_field" id="education_field" name="education_field" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                <option value="">انتخاب کنید</option>
+                @foreach(App\Models\EducationField::getActive() as $field)
+                    <option value="{{ $field->name }}">{{ $field->name }}</option>
+                @endforeach
+            </select>
             <x-input-error :messages="$errors->get('education_field')" class="mt-2" />
         </div>
 

@@ -28,7 +28,7 @@ $login = function () {
     <form wire:submit="login" class="space-y-4">
         <div>
             <x-input-label for="mobile" value="شماره موبایل" />
-            <x-text-input wire:model="form.mobile" id="mobile" class="block mt-1 w-full" type="text" name="mobile" required autofocus autocomplete="tel" placeholder="0912xxxxxxx" />
+            <x-text-input wire:model="form.mobile" id="mobile" class="block mt-1 w-full" type="number" name="mobile" required autofocus autocomplete="tel" placeholder="0912xxxxxxx" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)" />
             <x-input-error :messages="$errors->get('form.mobile')" class="mt-2" />
         </div>
 

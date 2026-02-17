@@ -16,14 +16,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            EducationFieldSeeder::class,
+        ]);
+
         // Admin User
         $user = User::create([
             'name' => 'Admin',
             'last_name' => 'User',
             'mobile' => '09123456789',
             'national_code' => '1234567890',
-            'education_field' => 'Computer Engineering',
-            'birth_date' => '1990-01-01',
+            'education_field' => 'عمران',
             'password' => Hash::make('password'),
         ]);
 
