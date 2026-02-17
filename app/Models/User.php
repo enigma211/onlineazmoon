@@ -22,6 +22,7 @@ class User extends Authenticatable implements FilamentUser
         'family',
         'mobile',
         'national_code',
+        'education_field',
         'password',
     ];
 
