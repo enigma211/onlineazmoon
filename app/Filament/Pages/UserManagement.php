@@ -139,7 +139,7 @@ class UserManagement extends Page implements HasTable
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\BulkAction::make('export_csv')
                         ->label('خروجی CSV')
-                        ->icon('heroicono-document-arrow-down')
+                        ->icon('heroicon-o-document-arrow-down')
                         ->action(function ($records) {
                             $csv = ExportService::exportUsers($records);
                             return response()->streamDownload(
@@ -154,14 +154,9 @@ class UserManagement extends Page implements HasTable
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\Action::make('create')
-                    ->label('ایجاد کاربر جدید')
-                    ->url(route('filament.admin.auth.auth.register'))
-                    ->icon('heroicon-o-plus')
-                    ->button(),
                 Tables\Actions\Action::make('export_all_users')
                     ->label('خروجی تمام کاربران')
-                    ->icon('heroicono-document-arrow-down')
+                    ->icon('heroicon-o-document-arrow-down')
                     ->action(function () {
                         $csv = ExportService::exportUsers();
                         return response()->streamDownload(
