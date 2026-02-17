@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Cache;
 class Settings extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+
+    protected static ?string $navigationGroup = 'تنظیمات';
     
     protected static ?string $navigationLabel = 'تنظیمات';
     

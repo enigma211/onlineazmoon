@@ -64,14 +64,8 @@ class Reports extends Page implements HasTable
                             
                         Forms\Components\Grid::make(3)
                             ->schema([
-                                Forms\Components\DatePicker::make('date_from')
-                                    ->label('از تاریخ')
-                                    ->required()
-                                    ->default(Carbon::now()->subDays(30)),
-                                Forms\Components\DatePicker::make('date_to')
-                                    ->label('تا تاریخ')
-                                    ->required()
-                                    ->default(Carbon::now()),
+                                $this->makeLocalizedDatePicker('date_from', 'از تاریخ', Carbon::now()->subDays(30)),
+                                $this->makeLocalizedDatePicker('date_to', 'تا تاریخ', Carbon::now()),
                                 Forms\Components\Select::make('exam_id')
                                     ->label('آزمون')
                                     ->options(function () {
@@ -103,6 +97,35 @@ class Reports extends Page implements HasTable
                     ->collapsible(),
             ])
             ->statePath('filters');
+    }
+
+    protected function makeLocalizedDatePicker(string $name, string $label, Carbon $default)
+    {
+        $jalaliComponentClasses = [
+            'Bezhansalleh\\FilamentJalaliDatepicker\\Forms\\Components\\JalaliDatePicker',
+            'Ariaieboy\\FilamentJalali\\Forms\\Components\\JalaliDatePicker',
+        ];
+
+        foreach ($jalaliComponentClasses as $componentClass) {
+            if (class_exists($componentClass)) {
+                $component = call_user_func([$componentClass, 'make'], $name)
+                    ->label($label)
+                    ->required()
+                    ->default($default->format('Y-m-d'));
+
+                if (method_exists($component, 'displayFormat')) {
+                    $component = $component->displayFormat('Y/m/d');
+                }
+
+                return $component;
+            }
+        }
+
+        return Forms\Components\DatePicker::make($name)
+            ->label($label)
+            ->displayFormat('Y/m/d')
+            ->required()
+            ->default($default->format('Y-m-d'));
     }
     
     public function applyFilters(): void
@@ -190,11 +213,11 @@ class Reports extends Page implements HasTable
                     }),
                 Tables\Columns\TextColumn::make('started_at')
                     ->label('زمان شروع')
-                    ->dateTime('Y/m/d H:i')
+                    ->formatStateUsing(fn ($state) => $state ? \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($state))->format('Y/m/d H:i') : '-')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('finished_at')
                     ->label('زمان پایان')
-                    ->dateTime('Y/m/d H:i')
+                    ->formatStateUsing(fn ($state) => $state ? \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($state))->format('Y/m/d H:i') : '-')
                     ->sortable(),
             ])
             ->filters([
@@ -280,7 +303,7 @@ class Reports extends Page implements HasTable
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاریخ ثبت‌نام')
-                    ->dateTime('Y/m/d')
+                    ->formatStateUsing(fn ($state) => $state ? \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($state))->format('Y/m/d H:i') : '-')
                     ->sortable(),
             ])
             ->actions([

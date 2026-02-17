@@ -7,7 +7,7 @@
                 <div class="border rounded-lg p-4 {{ $attempt->status === 'passed' ? 'bg-green-50 border-green-200' : ($attempt->status === 'failed' ? 'bg-red-50 border-red-200' : ($attempt->status === 'completed' ? 'bg-blue-50 border-blue-200' : 'bg-yellow-50 border-yellow-200') }}">
                     <div class="flex justify-between items-start mb-3">
                         <div>
-                            <h4 class="font-semibold text-gray-900">{{ $attempt->exam->title }}</h4>
+                            <h4 class="font-semibold text-gray-900">{{ $attempt->exam?->title ?? 'آزمون حذف شده' }}</h4>
                             <p class="text-sm text-gray-600">
                                 {{ \Morilog\Jalali\Jalalian::fromCarbon($attempt->created_at)->format('Y/m/d H:i') }}
                             </p>
@@ -22,13 +22,18 @@
                         <div>
                             <span class="text-gray-600">نمره:</span>
                             @if($attempt->score !== null)
-                                <span class="font-medium">{{ $attempt->score }} از {{ $attempt->exam->questions->count() }}</span>
-                                <span class="text-xs text-gray-500">
-                                    ({{ round(($attempt->score / $attempt->exam->questions->count()) * 100, 1) }}%)
-                                </span>
-                                @if($attempt->exam->hasPassingScore())
+                                @php
+                                    $questionCount = $attempt->exam?->questions?->count() ?? 0;
+                                @endphp
+                                <span class="font-medium">{{ $attempt->score }} از {{ $questionCount > 0 ? $questionCount : '-' }}</span>
+                                @if($questionCount > 0)
+                                    <span class="text-xs text-gray-500">
+                                        ({{ round(($attempt->score / $questionCount) * 100, 1) }}%)
+                                    </span>
+                                @endif
+                                @if($attempt->exam?->hasPassingScore())
                                     <span class="text-xs @if($attempt->status === 'passed') text-green-600 @elseif($attempt->status === 'failed') text-red-600 @else text-blue-600 @endif">
-                                        حد نصاب: {{ $attempt->exam->passing_score }}%
+                                        حد نصاب: {{ $attempt->exam?->passing_score }}%
                                     </span>
                                 @endif
                             @else
@@ -71,7 +76,7 @@
                                 </summary>
                                 <div class="mt-2 space-y-2 max-h-48 overflow-y-auto">
                                     @php
-                                        $questions = $attempt->exam->questions->keyBy('id');
+                                        $questions = $attempt->exam?->questions?->keyBy('id') ?? collect();
                                     @endphp
                                     @foreach($attempt->answers as $questionId => $selectedOption)
                                         @php
@@ -80,7 +85,7 @@
                                         @if($question)
                                             <div class="bg-white rounded p-2 border text-xs">
                                                 <div class="font-medium mb-1">
-                                                    سوال {{ $loop->iteration }}: {{ Str::limit($question->title, 80) }}
+                                                    سوال {{ $loop->iteration }}: {{ \Illuminate\Support\Str::limit($question->title, 80) }}
                                                 </div>
                                                 <div class="flex justify-between items-center">
                                                     <span>پاسخ: گزینه {{ $selectedOption }}</span>

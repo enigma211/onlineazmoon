@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Cache;
 class Security extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+
+    protected static ?string $navigationGroup = 'تنظیمات';
+
+    protected static ?string $navigationParentItem = 'تنظیمات';
     
     protected static ?string $navigationLabel = 'امنیت';
     
@@ -19,8 +23,6 @@ class Security extends Page
     protected static ?string $pluralModelLabel = 'امنیت';
     
     protected static ?string $title = 'تنظیمات امنیتی';
-    
-    protected static ?string $parent = 'Settings';
     
     protected static string $view = 'filament.pages.security';
     

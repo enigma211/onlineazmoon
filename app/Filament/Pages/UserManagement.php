@@ -37,11 +37,8 @@ class UserManagement extends Page implements HasTable
         return $table
             ->query(
                 User::query()
-                    ->withCount(['examAttempts' => function ($query) {
-                        $query->with('exam');
-                    }])
                     ->with(['examAttempts' => function ($query) {
-                        $query->with('exam')->latest();
+                        $query->with(['exam.questions'])->latest('created_at');
                     }])
             )
             ->columns([
@@ -60,30 +57,6 @@ class UserManagement extends Page implements HasTable
                 Tables\Columns\TextColumn::make('mobile')
                     ->label('موبایل')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('exam_attempts_count')
-                    ->label('تعداد آزمون‌ها')
-                    ->sortable()
-                    ->formatStateUsing(fn ($record) => $record->exam_attempts_count . ' آزمون'),
-                Tables\Columns\TextColumn::make('latest_exam_score')
-                    ->label('آخرین نمره')
-                    ->formatStateUsing(function ($record) {
-                        $latestAttempt = $record->examAttempts->first();
-                        if ($latestAttempt && $latestAttempt->score !== null) {
-                            return $latestAttempt->score . ' از ' . $latestAttempt->exam->questions->count();
-                        }
-                        return '-';
-                    })
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('average_score')
-                    ->label('میانگین نمرات')
-                    ->formatStateUsing(function ($record) {
-                        $scores = $record->examAttempts->where('score', '!=', null)->pluck('score');
-                        if ($scores->isNotEmpty()) {
-                            return round($scores->avg(), 2);
-                        }
-                        return '-';
-                    })
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاریخ ثبت‌نام')
                     ->dateTime('Y/m/d')

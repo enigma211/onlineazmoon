@@ -56,7 +56,7 @@
                     <span class="text-gray-600">آخرین فعالیت:</span>
                     <span class="font-medium">
                         @php
-                            $lastActivity = $user->examAttempts->latest()->first();
+                            $lastActivity = $user->examAttempts->sortByDesc('created_at')->first();
                         @endphp
                         @if($lastActivity)
                             {{ \Morilog\Jalali\Jalalian::fromCarbon($lastActivity->created_at)->format('Y/m/d H:i') }}
