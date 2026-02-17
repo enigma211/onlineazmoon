@@ -29,12 +29,12 @@
             </h2>
 
             <div class="space-y-3 sm:space-y-4">
-                <a href="{{ route('filament.admin.auth.login') }}" class="block w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 transition-all duration-200 transform hover:-translate-y-1 focus:ring-4 focus:ring-red-500/20 text-sm sm:text-base">
+                <a href="{{ route('login') }}" class="block w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 transition-all duration-200 transform hover:-translate-y-1 focus:ring-4 focus:ring-red-500/20 text-sm sm:text-base">
                     ورود به سامانه
                 </a>
                 
                 @if($enableRegistration)
-                    <a href="{{ route('filament.admin.auth.register') }}" class="block w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-white hover:bg-gray-50 text-gray-800 font-bold rounded-xl border-2 border-gray-200 hover:border-gray-300 transition-all duration-200 transform hover:-translate-y-1 focus:ring-4 focus:ring-gray-200 text-sm sm:text-base">
+                    <a href="{{ route('register') }}" class="block w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-white hover:bg-gray-50 text-gray-800 font-bold rounded-xl border-2 border-gray-200 hover:border-gray-300 transition-all duration-200 transform hover:-translate-y-1 focus:ring-4 focus:ring-gray-200 text-sm sm:text-base">
                         ثبت نام داوطلبان
                     </a>
                 @else
