@@ -47,8 +47,7 @@ $register = function () {
 ?>
 
 <div>
-    <form wire:submit.prevent="register" class="space-y-4" method="POST">
-        @csrf
+    <form wire:submit="register" class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <x-input-label for="name" value="نام" />
