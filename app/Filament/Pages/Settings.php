@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class Settings extends Page
 {
@@ -28,7 +29,7 @@ class Settings extends Page
     
     public function mount(): void
     {
-        $settings = Cache::get('site_settings', []);
+        $settings = $this->getSiteSettings();
         $this->form->fill([
             'site_name' => $settings['site_name'] ?? config('app.name', 'سامانه آزمون‌ها'),
             'site_description' => $settings['site_description'] ?? config('app.description', 'سامانه آزمون‌های دفتر مقررات ملی ساختمان'),
@@ -72,14 +73,38 @@ class Settings extends Page
     public function save(): void
     {
         $data = $this->form->getState();
-        
-        // Save to cache or database
-        Cache::put('site_settings', $data);
-        
-        // You can also save to .env file or database table
-        // For now, we'll use cache
+
+        foreach ($data as $key => $value) {
+            DB::table('site_settings')->updateOrInsert(
+                ['key' => $key],
+                [
+                    'value' => json_encode($value, JSON_UNESCAPED_UNICODE),
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]
+            );
+        }
+
+        Cache::forever('site_settings', $data);
         
         $this->getSavedNotification()?->send();
+    }
+
+    protected function getSiteSettings(): array
+    {
+        return Cache::rememberForever('site_settings', function () {
+            if (!DB::getSchemaBuilder()->hasTable('site_settings')) {
+                return [];
+            }
+
+            return DB::table('site_settings')
+                ->pluck('value', 'key')
+                ->map(function ($value) {
+                    $decoded = json_decode($value, true);
+                    return json_last_error() === JSON_ERROR_NONE ? $decoded : $value;
+                })
+                ->toArray();
+        });
     }
     
     protected function getSavedNotification(): ?\Filament\Notifications\Notification

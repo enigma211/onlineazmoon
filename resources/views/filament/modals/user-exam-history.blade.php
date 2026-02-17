@@ -4,7 +4,30 @@
     @if($user->examAttempts->count() > 0)
         <div class="space-y-4">
             @foreach($user->examAttempts->sortByDesc('created_at') as $attempt)
-                <div class="border rounded-lg p-4 {{ $attempt->status === 'passed' ? 'bg-green-50 border-green-200' : ($attempt->status === 'failed' ? 'bg-red-50 border-red-200' : ($attempt->status === 'completed' ? 'bg-blue-50 border-blue-200' : 'bg-yellow-50 border-yellow-200') }}">
+                @php
+                    $statusContainerClass = match ($attempt->status) {
+                        'passed' => 'bg-green-50 border-green-200',
+                        'failed' => 'bg-red-50 border-red-200',
+                        'completed' => 'bg-blue-50 border-blue-200',
+                        default => 'bg-yellow-50 border-yellow-200',
+                    };
+
+                    $statusBadgeClass = match ($attempt->status) {
+                        'passed' => 'bg-green-100 text-green-800',
+                        'failed' => 'bg-red-100 text-red-800',
+                        'completed' => 'bg-blue-100 text-blue-800',
+                        default => 'bg-yellow-100 text-yellow-800',
+                    };
+
+                    $statusLabel = match ($attempt->status) {
+                        'passed' => '✅ قبول',
+                        'failed' => '❌ مردود',
+                        'completed' => '📝 تکمیل',
+                        default => '⏳ در حال انجام',
+                    };
+                @endphp
+
+                <div class="border rounded-lg p-4 {{ $statusContainerClass }}">
                     <div class="flex justify-between items-start mb-3">
                         <div>
                             <h4 class="font-semibold text-gray-900">{{ $attempt->exam?->title ?? 'آزمون حذف شده' }}</h4>
@@ -12,9 +35,8 @@
                                 {{ \Morilog\Jalali\Jalalian::fromCarbon($attempt->created_at)->format('Y/m/d H:i') }}
                             </p>
                         </div>
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full
-                            {{ $attempt->status === 'passed' ? 'bg-green-100 text-green-800' : ($attempt->status === 'failed' ? 'bg-red-100 text-red-800' : ($attempt->status === 'completed' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800') }}">
-                            {{ $attempt->status === 'passed' ? '✅ قبول' : ($attempt->status === 'failed' ? '❌ مردود' : ($attempt->status === 'completed' ? '📝 تکمیل' : '⏳ در حال انجام')) }}
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $statusBadgeClass }}">
+                            {{ $statusLabel }}
                         </span>
                     </div>
                     
