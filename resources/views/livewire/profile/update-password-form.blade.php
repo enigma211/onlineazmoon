@@ -70,7 +70,7 @@ $updatePassword = function () {
         </div>
 
         <div class="flex items-center gap-4">
-            <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold rounded-lg border border-blue-800 transition-colors shadow-sm">
+            <button type="submit" style="background-color: #6d28d9; border-color: #5b21b6; color: #ffffff;" class="inline-flex items-center px-4 py-2 hover:bg-violet-800 text-white text-sm font-semibold rounded-lg border transition-colors shadow-sm">
                 ذخیره رمز عبور
             </button>
 

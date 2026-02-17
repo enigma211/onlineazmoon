@@ -27,7 +27,7 @@
                         <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->name }} {{ auth()->user()->family }}</p>
                         <p class="text-xs text-gray-500 hidden sm:block">کد ملی: {{ auth()->user()->national_code }}</p>
                     </div>
-                    <a href="{{ route('profile') }}" class="px-3 sm:px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm font-semibold border border-blue-800 rounded-lg transition-colors whitespace-nowrap shadow-sm">
+                    <a href="{{ route('profile') }}" style="background-color: #6d28d9; border-color: #5b21b6; color: #ffffff;" class="px-3 sm:px-4 py-2 hover:bg-violet-800 text-white text-xs sm:text-sm font-semibold border rounded-lg transition-colors whitespace-nowrap shadow-sm">
                         ویرایش مشخصات
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
