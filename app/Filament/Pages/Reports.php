@@ -128,6 +128,12 @@ class Reports extends Page implements HasTable
             ->required()
             ->default($default->format('Y-m-d'));
 
+        try {
+            $component = $component->jalali();
+        } catch (\Throwable $exception) {
+            // Jalali macro is not registered, keep default DatePicker.
+        }
+
         return $component;
     }
     
