@@ -82,12 +82,6 @@ $register = function () {
         </div>
 
         <div>
-            <x-input-label for="birth_date" value="تاریخ تولد" />
-            <x-text-input wire:model="birth_date" id="birth_date" class="block mt-1 w-full" type="date" name="birth_date" />
-            <x-input-error :messages="$errors->get('birth_date')" class="mt-2" />
-        </div>
-
-        <div>
             <x-input-label for="password" value="رمز عبور" />
             <x-text-input wire:model="password" id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" placeholder="رمز عبور" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
