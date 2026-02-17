@@ -46,7 +46,7 @@ $register = function () {
 
 ?>
 
-<div>
+<form wire:submit.prevent="register">
     <div class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
             <div>
@@ -99,9 +99,7 @@ $register = function () {
 
         <div class="pt-2">
             <button 
-                type="button" 
-                wire:click="register" 
-                onclick="console.log('Button clicked'); return false;"
+                type="submit"
                 class="w-full inline-flex justify-center items-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 border border-transparent rounded-xl font-semibold text-xs text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-lg shadow-red-500/30">
                 <span wire:loading.remove wire:target="register">ثبت نام در سامانه</span>
                 <span wire:loading wire:target="register">در حال پردازش...</span>
@@ -125,4 +123,4 @@ $register = function () {
             </a>
         </div>
     </div>
-</div>
+</form>
