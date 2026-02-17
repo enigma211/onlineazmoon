@@ -31,7 +31,7 @@ class UserResource extends Resource
                     ->label('نام')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('last_name')
+                Forms\Components\TextInput::make('family')
                     ->label('نام خانوادگی')
                     ->required()
                     ->maxLength(255),
@@ -69,7 +69,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('نام')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
+                Tables\Columns\TextColumn::make('family')
                     ->label('نام خانوادگی')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('mobile')

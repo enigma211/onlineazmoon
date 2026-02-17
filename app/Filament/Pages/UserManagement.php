@@ -49,7 +49,7 @@ class UserManagement extends Page implements HasTable
                     ->label('نام')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('last_name')
+                Tables\Columns\TextColumn::make('family')
                     ->label('نام خانوادگی')
                     ->searchable()
                     ->sortable(),

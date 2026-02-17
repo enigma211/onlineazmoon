@@ -84,7 +84,7 @@ class Reports extends Page implements HasTable
                         Forms\Components\Select::make('user_id')
                             ->label('کاربر')
                             ->options(function () {
-                                return User::selectRaw('CONCAT(name, " ", last_name, " (", national_code, ")") as full_name, id')
+                                return User::selectRaw('CONCAT(name, " ", family, " (", national_code, ")") as full_name, id')
                                     ->pluck('full_name', 'id');
                             })
                             ->placeholder('همه کاربران')
@@ -154,7 +154,7 @@ class Reports extends Page implements HasTable
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('نام کاربر')
-                    ->formatStateUsing(fn ($record) => $record->user->name . ' ' . $record->user->last_name)
+                    ->formatStateUsing(fn ($record) => $record->user->name . ' ' . $record->user->family)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.national_code')
                     ->label('کد ملی')
@@ -252,7 +252,7 @@ class Reports extends Page implements HasTable
                     ->label('نام')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('last_name')
+                Tables\Columns\TextColumn::make('family')
                     ->label('نام خانوادگی')
                     ->searchable()
                     ->sortable(),

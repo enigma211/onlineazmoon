@@ -12,7 +12,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600">نام خانوادگی:</span>
-                    <span class="font-medium">{{ $user->last_name }}</span>
+                    <span class="font-medium">{{ $user->family }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600">کد ملی:</span>

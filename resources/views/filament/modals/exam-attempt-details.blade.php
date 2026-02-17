@@ -6,7 +6,7 @@
             <strong>آزمون:</strong> {{ $attempt->exam->title }}
         </div>
         <div>
-            <strong>کاربر:</strong> {{ $attempt->user->name }} {{ $attempt->user->last_name }}
+            <strong>کاربر:</strong> {{ $attempt->user->name }} {{ $attempt->user->family }}
         </div>
         <div>
             <strong>کد ملی:</strong> {{ $attempt->user->national_code }}

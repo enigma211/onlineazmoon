@@ -24,10 +24,10 @@
                 </div>
                 <div class="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
                     <div class="text-right sm:text-left min-w-0 flex-1">
-                        <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->name }} {{ auth()->user()->last_name }}</p>
+                        <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->name }} {{ auth()->user()->family }}</p>
                         <p class="text-xs text-gray-500 hidden sm:block">کد ملی: {{ auth()->user()->national_code }}</p>
                     </div>
-                    <a href="{{ route('profile') }}" class="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap">
+                    <a href="{{ route('profile') }}" class="px-3 sm:px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm font-semibold border border-blue-800 rounded-lg transition-colors whitespace-nowrap shadow-sm">
                         ویرایش مشخصات
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
@@ -45,7 +45,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Welcome Section -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">خوش آمدید، {{ auth()->user()->name }}!</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">خوش آمدید، {{ auth()->user()->name }} {{ auth()->user()->family }}!</h2>
             <p class="text-gray-600">در این پنل می‌توانید آزمون‌های موجود را مشاهده و در آن‌ها شرکت کنید.</p>
         </div>
 
@@ -86,7 +86,7 @@
                             </div>
 
                             @php
-                                $userAttempt = $exam->attempts()->where('user_id', auth()->id())->first();
+                                $userAttempt = $exam->attempts->first();
                             @endphp
 
                             @if($userAttempt)
@@ -130,6 +130,7 @@
             <div class="mt-12">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">آزمون‌های گذشته</h3>
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -142,7 +143,7 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($pastExams as $exam)
                                 @php
-                                    $userAttempt = $exam->attempts()->where('user_id', auth()->id())->first();
+                                    $userAttempt = $exam->attempts->first();
                                 @endphp
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $exam->title }}</td>
@@ -169,6 +170,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         @endif

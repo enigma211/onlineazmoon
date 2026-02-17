@@ -1,5 +1,5 @@
 <div class="space-y-6">
-    <h3 class="text-lg font-bold text-gray-900">تاریخچه آزمون‌های {{ $user->name }} {{ $user->last_name }}</h3>
+    <h3 class="text-lg font-bold text-gray-900">تاریخچه آزمون‌های {{ $user->name }} {{ $user->family }}</h3>
     
     @if($user->examAttempts->count() > 0)
         <div class="space-y-4">

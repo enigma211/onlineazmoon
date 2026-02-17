@@ -36,7 +36,7 @@ class Register extends BaseRegister
                     ->label('نام')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('last_name')
+                TextInput::make('family')
                     ->label('نام خانوادگی')
                     ->required()
                     ->maxLength(255),
