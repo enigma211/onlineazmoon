@@ -27,7 +27,6 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(\App\Filament\Auth\Login::class)
-            ->registration(\App\Filament\Auth\Register::class)
             ->font('Vazirmatn', asset('fonts/vazirmatn.css'))
             ->colors([
                 'primary' => Color::Amber,

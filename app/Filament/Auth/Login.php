@@ -32,14 +32,13 @@ class Login extends BaseLogin
     {
         return $form
             ->schema([
-                TextInput::make('national_code')
-                    ->label('کد ملی')
+                TextInput::make('email')
+                    ->label('ایمیل')
                     ->required()
+                    ->email()
                     ->autofocus()
                     ->extraInputAttributes(['tabindex' => 1])
-                    ->numeric()
-                    ->length(10)
-                    ->placeholder('کد ملی 10 رقمی'),
+                    ->placeholder('example@domain.com'),
                 $this->getPasswordFormComponent(),
             ])
             ->statePath('data');
@@ -50,18 +49,18 @@ class Login extends BaseLogin
         try {
             $data = $this->form->getState();
 
-            $user = \App\Models\User::where('national_code', $data['national_code'])->first();
+            $user = \App\Models\User::where('email', $data['email'])->first();
 
             if (!$user || !\Illuminate\Support\Facades\Hash::check($data['password'], $user->password)) {
                 throw ValidationException::withMessages([
-                    'data.national_code' => 'کد ملی یا رمز عبور اشتباه است.',
+                    'data.email' => 'ایمیل یا رمز عبور اشتباه است.',
                 ]);
             }
 
             // Check if user can access admin panel BEFORE logging in
             if (!$user->canAccessPanel(\Filament\Facades\Filament::getCurrentPanel())) {
                 throw ValidationException::withMessages([
-                    'data.national_code' => 'شما دسترسی به پنل مدیریت ندارید. لطفاً از صفحه اصلی وارد شوید.',
+                    'data.email' => 'شما دسترسی به پنل مدیریت ندارید. لطفاً از صفحه اصلی وارد شوید.',
                 ]);
             }
 
@@ -73,7 +72,7 @@ class Login extends BaseLogin
 
         } catch (TooManyRequestsException $exception) {
             throw ValidationException::withMessages([
-                'data.national_code' => __('filament::login.messages.throttled', [
+                'data.email' => __('filament::login.messages.throttled', [
                     'seconds' => $exception->secondsUntilAvailable,
                     'minutes' => ceil($exception->secondsUntilAvailable / 60),
                 ]),

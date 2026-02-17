@@ -20,9 +20,11 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name',
         'family',
+        'email',
         'mobile',
         'national_code',
         'education_field',
+        'is_admin',
         'password',
     ];
 
@@ -45,6 +47,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return [
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
@@ -60,15 +63,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(?Panel $panel = null): bool
     {
-        // Only allow specific admin users to access Filament panel
-        // For now, check if user has admin role or specific mobile number
-        // You can modify this logic based on your requirements
-        $adminMobileNumbers = [
-            '09123456789', // Default admin
-            '09876543211', // Test admin
-            // Add more admin mobile numbers here
-        ];
-        
-        return in_array($this->mobile, $adminMobileNumbers);
+        return (bool) $this->is_admin;
     }
 }
