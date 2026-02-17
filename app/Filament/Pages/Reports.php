@@ -102,8 +102,8 @@ class Reports extends Page implements HasTable
     protected function makeLocalizedDatePicker(string $name, string $label, Carbon $default)
     {
         $jalaliComponentClasses = [
-            'Ariaieboy\\FilamentJalaliDatetimepicker\\Forms\\Components\\JalaliDatePicker',
             'Bezhansalleh\\FilamentJalaliDatepicker\\Forms\\Components\\JalaliDatePicker',
+            'Ariaieboy\\FilamentJalaliDatetimepicker\\Forms\\Components\\JalaliDatePicker',
         ];
 
         foreach ($jalaliComponentClasses as $componentClass) {
@@ -127,12 +127,6 @@ class Reports extends Page implements HasTable
             ->displayFormat('Y/m/d')
             ->required()
             ->default($default->format('Y-m-d'));
-
-        try {
-            $component = $component->jalali();
-        } catch (\BadMethodCallException $exception) {
-            // Jalali macro is not registered, keep default DatePicker.
-        }
 
         return $component;
     }

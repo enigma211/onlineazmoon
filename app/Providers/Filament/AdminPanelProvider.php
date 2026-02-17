@@ -36,11 +36,29 @@ class AdminPanelProvider extends PanelProvider
                     body {
                         font-family: "Vazirmatn", sans-serif;
                     }
-                    .fi-ta-sidebar {
+                    .fi-sidebar {
                         text-align: right;
                     }
-                    .fi-ta-sidebar .fi-ta-nav-item {
+                    .fi-sidebar .fi-sidebar-item,
+                    .fi-sidebar .fi-sidebar-group-button {
                         text-align: right;
+                    }
+
+                    @media (max-width: 1023px) {
+                        .fi-topbar-open-sidebar-btn {
+                            display: inline-flex !important;
+                        }
+
+                        .fi-sidebar {
+                            right: 0;
+                            left: auto;
+                            max-width: 20rem;
+                            width: 85vw;
+                        }
+
+                        .fi-main {
+                            width: 100%;
+                        }
                     }
                 </style>',
             )
