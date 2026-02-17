@@ -13,7 +13,6 @@
         </style>
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @livewireStyles
     </head>
     <body class="bg-gray-50 flex items-center justify-center min-h-screen bg-[url('https://laravel.com/assets/img/welcome/background.svg')] bg-cover bg-center p-4">
         <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 sm:p-8 text-center border border-gray-100">
