@@ -106,11 +106,11 @@
                                     @endif
                                 </div>
                             @elseif($userAttempt)
-                                <a href="{{ route('exam.take', $exam->id) }}" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
+                                <a href="{{ route('exam.take', $exam->id) }}" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 bg-blue-600 hover:bg-blue-700 text-white text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
                                     ادامه آزمون
                                 </a>
                             @else
-                                <a href="{{ route('exam.take', $exam->id) }}" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
+                                <a href="{{ route('exam.take', $exam->id) }}" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 bg-red-600 hover:bg-red-700 text-white text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
                                     شروع آزمون
                                 </a>
                             @endif

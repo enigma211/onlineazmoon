@@ -16,7 +16,7 @@ class StudentDashboardController extends Controller
             ->with([
                 'questions',
                 'attempts' => function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
+                    $query->where('user_id', $userId)->latest('created_at');
                 },
             ])
             ->get();

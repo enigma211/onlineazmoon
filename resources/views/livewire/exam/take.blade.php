@@ -32,6 +32,7 @@ new #[Layout('layouts.app')] class extends Component {
         // Check for existing attempt
         $this->attempt = ExamAttempt::where('user_id', $user->id)
             ->where('exam_id', $exam->id)
+            ->latest('created_at')
             ->first();
 
         if ($this->attempt) {
@@ -158,7 +159,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 <span class="text-sm sm:text-base text-gray-500">سوال <span x-text="index + 1"></span> از <span x-text="totalSteps"></span></span>
                             </div>
 
-                            <div class="text-base sm:text-lg font-medium leading-relaxed" x-text="question.title"></div>
+                            <div class="text-base sm:text-lg font-medium leading-relaxed" x-html="question.title"></div>
 
                             <template x-if="question.image">
                                 <img :src="'/storage/' + question.image" class="max-w-full h-auto rounded-lg max-h-48 sm:max-h-64 object-contain">
@@ -169,8 +170,9 @@ new #[Layout('layouts.app')] class extends Component {
                                     <label class="flex items-start p-3 sm:p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
                                         :class="{'border-indigo-500 bg-indigo-50': answers[question.id] == option.id}">
                                         <input type="radio" :name="'question_' + question.id" :value="option.id" 
-                                            x-model="answers[question.id]" class="hidden mt-1">
-                                        <span class="mr-2 w-full text-sm sm:text-base leading-relaxed" x-text="option.text"></span>
+                                            x-model="answers[question.id]" 
+                                            class="mt-1 h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500 shrink-0 ml-2">
+                                        <span class="w-full text-sm sm:text-base leading-relaxed" x-html="option.text"></span>
                                     </label>
                                 </template>
                             </div>
@@ -182,37 +184,31 @@ new #[Layout('layouts.app')] class extends Component {
                         <button 
                             x-show="currentStep > 0"
                             @click="currentStep--"
-                            class="w-full sm:w-auto px-4 py-2 sm:py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base order-2 sm:order-1">
+                            class="w-full sm:w-32 px-4 py-2 sm:py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base order-2 sm:order-1 flex justify-center items-center">
                             قبلی
                         </button>
                         
                         <button 
                             x-show="currentStep < totalSteps - 1"
                             @click="currentStep++"
-                            class="w-full sm:w-auto px-4 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm sm:text-base order-1 sm:order-2">
+                            class="w-full sm:w-32 px-4 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm sm:text-base order-1 sm:order-2 flex justify-center items-center">
                             بعدی
                         </button>
 
                         <!-- Final Submit Button - Only shown on last question -->
-                        <div x-show="currentStep === totalSteps - 1" class="w-full order-1 sm:order-3">
-                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-yellow-600 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <p class="text-sm text-yellow-800">
-                                        شما به آخرین سوال رسیدید. پس از بررسی پاسخ‌های خود، دکمه "پایان آزمون" را برای ثبت نهایی کلیک کنید.
-                                    </p>
-                                </div>
-                            </div>
-                            
+                        <div x-show="currentStep === totalSteps - 1" class="w-full sm:w-auto order-1 sm:order-3">
                             <button 
                                 @click="submitExam()"
-                                class="w-full px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center">
-                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                پایان آزمون و ثبت نهایی پاسخ‌ها
+                                wire:loading.attr="disabled"
+                                class="w-full sm:w-auto px-6 py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span wire:loading.remove>پایان آزمون و ثبت نهایی</span>
+                                <span wire:loading class="flex items-center">
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    در حال ثبت...
+                                </span>
                             </button>
                         </div>
                     </div>
