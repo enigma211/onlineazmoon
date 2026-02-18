@@ -44,7 +44,17 @@ class QuestionBank extends Model
 
     public function getFormattedTagsAttribute()
     {
-        return implode(', ', $this->tags ?? []);
+        $tags = $this->tags;
+
+        if (is_array($tags)) {
+            return implode(', ', $tags);
+        }
+
+        if (is_string($tags)) {
+            return $tags;
+        }
+
+        return '';
     }
 
     public function scopeActive($query)

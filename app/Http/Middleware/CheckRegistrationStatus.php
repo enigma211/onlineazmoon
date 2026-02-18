@@ -32,12 +32,8 @@ class CheckRegistrationStatus
             Cache::forever('site_settings', $settings);
         }
 
-        $enableRegistration = $settings['enable_registration'] ?? true;
-
-        // If registration is disabled and trying to access registration page
-        if (!$enableRegistration && ($request->is('admin/register') || $request->is('register'))) {
-            abort(403, 'ثبت‌نام در حال حاضر غیرفعال است.');
-        }
+        // Registration availability is handled in UI + submit handlers.
+        // Keep route accessible so users see the disabled-state message.
 
         // Check if user is trying to access admin panel
         if ($request->is('admin/*') && auth()->check()) {

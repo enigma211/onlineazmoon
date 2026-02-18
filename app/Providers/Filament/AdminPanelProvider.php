@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Support\SiteSettings;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -15,6 +16,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -26,6 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(\App\Filament\Auth\Login::class)
+            ->brandName(fn (): string => SiteSettings::get('site_name', config('app.name', 'سامانه آزمون‌ها')))
+            ->brandLogo(fn (): HtmlString => new HtmlString('<img src="' . e(SiteSettings::logoUrl()) . '" alt="logo" style="height: 2rem; width: auto; object-fit: contain;">'))
+            ->favicon(fn (): string => SiteSettings::faviconUrl())
             ->font('Vazirmatn', asset('fonts/vazirmatn.css'))
             ->colors([
                 'primary' => Color::Amber,

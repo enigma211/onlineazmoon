@@ -59,10 +59,14 @@ $login = function () {
         </div>
 
         <div class="text-center pt-2">
-            <span class="text-sm text-gray-500">حساب کاربری ندارید؟ </span>
-            <a class="text-sm text-red-600 hover:text-red-700 font-bold" href="{{ route('register') }}" wire:navigate>
-                ثبت نام کنید
-            </a>
+            @if(($siteSettings['enable_registration'] ?? true) === true)
+                <span class="text-sm text-gray-500">حساب کاربری ندارید؟ </span>
+                <a class="text-sm text-red-600 hover:text-red-700 font-bold" href="{{ route('register') }}" wire:navigate>
+                    ثبت نام کنید
+                </a>
+            @else
+                <span class="text-sm text-gray-500">ثبت‌نام در حال حاضر غیرفعال است.</span>
+            @endif
         </div>
     </div>
 </form>

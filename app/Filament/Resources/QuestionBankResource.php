@@ -84,7 +84,7 @@ class QuestionBankResource extends Resource
                     ->label('دسته‌بندی')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\BadgeColumn::make('difficulty_level')
+                Tables\Columns\TextColumn::make('difficulty_level')
                     ->label('سطح دشواری')
                     ->formatStateUsing(fn ($state) => match($state) {
                         'easy' => 'آسان',
@@ -92,6 +92,7 @@ class QuestionBankResource extends Resource
                         'hard' => 'سخت',
                         default => $state,
                     })
+                    ->badge()
                     ->color(fn ($state) => match($state) {
                         'easy' => 'success',
                         'medium' => 'warning',
@@ -99,8 +100,7 @@ class QuestionBankResource extends Resource
                         default => 'primary',
                     }),
                 Tables\Columns\TextColumn::make('formatted_tags')
-                    ->label('برچسب‌ها')
-                    ->searchable(),
+                    ->label('برچسب‌ها'),
                 Tables\Columns\TextColumn::make('questions_count')
                     ->label('تعداد سوالات')
                     ->counts('questions')

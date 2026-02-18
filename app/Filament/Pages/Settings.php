@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Support\SiteSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
@@ -33,8 +34,9 @@ class Settings extends Page
         $this->form->fill([
             'site_name' => $settings['site_name'] ?? config('app.name', 'سامانه آزمون‌ها'),
             'site_description' => $settings['site_description'] ?? config('app.description', 'سامانه آزمون‌های دفتر مقررات ملی ساختمان'),
-            'contact_email' => $settings['contact_email'] ?? config('mail.from.address', 'info@example.com'),
             'enable_registration' => $settings['enable_registration'] ?? true,
+            'site_logo' => $settings['site_logo'] ?? null,
+            'site_favicon' => $settings['site_favicon'] ?? null,
         ]);
     }
     
@@ -52,11 +54,25 @@ class Settings extends Page
                             ->label('توضیحات سایت')
                             ->rows(3)
                             ->maxLength(500),
-                        Forms\Components\TextInput::make('contact_email')
-                            ->label('ایمیل تماس')
-                            ->email()
-                            ->required()
-                            ->maxLength(255),
+                    ]),
+
+                Forms\Components\Section::make('هویت بصری سایت')
+                    ->schema([
+                        Forms\Components\FileUpload::make('site_logo')
+                            ->label('لوگو سایت')
+                            ->disk('public')
+                            ->directory('settings')
+                            ->image()
+                            ->imageEditor()
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                            ->helperText('این لوگو در صفحات اصلی، ورود/ثبت‌نام و داشبورد کاربر نمایش داده می‌شود.'),
+                        Forms\Components\FileUpload::make('site_favicon')
+                            ->label('Favicon سایت')
+                            ->disk('public')
+                            ->directory('settings')
+                            ->image()
+                            ->acceptedFileTypes(['image/png', 'image/x-icon', 'image/vnd.microsoft.icon', 'image/svg+xml'])
+                            ->helperText('این آیکن در تب مرورگر نمایش داده می‌شود.'),
                     ]),
                     
                 Forms\Components\Section::make('تنظیمات کاربران')
@@ -92,19 +108,7 @@ class Settings extends Page
 
     protected function getSiteSettings(): array
     {
-        return Cache::rememberForever('site_settings', function () {
-            if (!DB::getSchemaBuilder()->hasTable('site_settings')) {
-                return [];
-            }
-
-            return DB::table('site_settings')
-                ->pluck('value', 'key')
-                ->map(function ($value) {
-                    $decoded = json_decode($value, true);
-                    return json_last_error() === JSON_ERROR_NONE ? $decoded : $value;
-                })
-                ->toArray();
-        });
+        return SiteSettings::all();
     }
     
     protected function getSavedNotification(): ?\Filament\Notifications\Notification

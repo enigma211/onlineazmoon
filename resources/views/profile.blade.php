@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>پروفایل کاربری - سامانه آزمون‌های دفتر مقررات ملی ساختمان</title>
+    <meta name="description" content="{{ $siteDescription }}">
+    <title>پروفایل کاربری - {{ $siteName }}</title>
+    <link rel="icon" href="{{ $siteFaviconUrl }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="{{ asset('fonts/vazirmatn.css') }}" rel="stylesheet" type="text/css" />
     <style>
@@ -16,10 +18,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                    <img src="{{ asset('images/logo.png') }}" alt="لوگو" class="h-12 sm:h-14 md:h-16 w-auto">
+                    <img src="{{ $siteLogoUrl }}" alt="{{ $siteName }}" class="h-12 sm:h-14 md:h-16 w-auto">
                     <div class="min-w-0 flex-1 sm:flex-none">
                         <h1 class="text-lg sm:text-xl font-bold text-gray-800 truncate">پروفایل کاربری</h1>
-                        <p class="text-xs sm:text-sm text-gray-600 hidden sm:block">سامانه آزمون‌های دفتر مقررات ملی ساختمان</p>
+                        <p class="text-xs sm:text-sm text-gray-600 hidden sm:block">{{ $siteDescription }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">

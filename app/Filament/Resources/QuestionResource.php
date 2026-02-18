@@ -28,85 +28,6 @@ class QuestionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('راهنمای فرمول‌نویسی LaTeX')
-                    ->description('برای نمایش فرمول‌های ریاضی از LaTeX استفاده کنید. فرمول‌ها بین $$ قرار می‌گیرند.')
-                    ->schema([
-                        Forms\Components\Placeholder::make('formula_guide')
-                            ->content(function () {
-                                return new HtmlString(<<<'HTML'
-                                    <div class="space-y-4" dir="ltr">
-                                        <div class="bg-blue-50 p-4 rounded-lg">
-                                            <h4 class="font-bold text-blue-900 mb-2">نمونه‌های فرمول:</h4>
-                                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                                <div>
-                                                    <code class="bg-gray-100 p-1 rounded">$$x^2 + y^2 = z^2$$</code>
-                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-1"></div>
-                                                </div>
-                                                <div>
-                                                    <code class="bg-gray-100 p-1 rounded">$$\\frac{a}{b} = \\frac{c}{d}$$</code>
-                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-2"></div>
-                                                </div>
-                                                <div>
-                                                    <code class="bg-gray-100 p-1 rounded">$$\\sqrt{x^2 + 1}$$</code>
-                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-3"></div>
-                                                </div>
-                                                <div>
-                                                    <code class="bg-gray-100 p-1 rounded">$$\\sum_{i=1}^{n} x_i$$</code>
-                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-4"></div>
-                                                </div>
-                                                <div>
-                                                    <code class="bg-gray-100 p-1 rounded">$$\\int_0^\\infty e^{-x} dx$$</code>
-                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-5"></div>
-                                                </div>
-                                                <div>
-                                                    <code class="bg-gray-100 p-1 rounded">$$\\alpha + \\beta = \\gamma$$</code>
-                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-6"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="bg-green-50 p-4 rounded-lg">
-                                            <h4 class="font-bold text-green-900 mb-2">فرمول‌های پرکاربرد:</h4>
-                                            <ul class="text-sm space-y-1 text-green-800">
-                                                <li><code>\\frac{numerator}{denominator}</code> - کسر</li>
-                                                <li><code>\\sqrt{x}</code> - رادیکال</li>
-                                                <li><code>x^{n}</code> - توان</li>
-                                                <li><code>\\sum_{i=1}^{n}</code> - سیگما</li>
-                                                <li><code>\\int_{a}^{b}</code> - انتگرال</li>
-                                                <li><code>\\alpha, \\beta, \\gamma</code> - حروف یونانی</li>
-                                                <li><code>\\pm, \\times, \\div</code> - عملگرها</li>
-                                                <li><code>\\leq, \\geq, \\neq</code> - مقایسه‌ها</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-                                    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-                                    <script>
-                                        document.addEventListener("DOMContentLoaded", function() {
-                                            const examples = [
-                                                ["preview-1", "x^2 + y^2 = z^2"],
-                                                ["preview-2", "\\frac{a}{b} = \\frac{c}{d}"],
-                                                ["preview-3", "\\sqrt{x^2 + 1}"],
-                                                ["preview-4", "\\sum_{i=1}^{n} x_i"],
-                                                ["preview-5", "\\int_0^\\infty e^{-x} dx"],
-                                                ["preview-6", "\\alpha + \\beta = \\gamma"]
-                                            ];
-                                            
-                                            examples.forEach(([id, formula]) => {
-                                                const element = document.getElementById(id);
-                                                if (element && katex) {
-                                                    katex.render(formula, element, {
-                                                        throwOnError: false
-                                                    });
-                                                }
-                                            });
-                                        });
-                                    </script>
-                                HTML);
-                            })
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible(),
-                
                 Forms\Components\RichEditor::make('title')
                     ->required()
                     ->columnSpanFull()
@@ -146,7 +67,7 @@ class QuestionResource extends Resource
                             }
                         '
                     ])
-                    ->helperText('می‌توانید از فرمول LaTeX بین $$ استفاده کنید. مثال: $$x^2 + y^2 = z^2$$'),
+                    ->helperText('برای نوشتن فرمول می‌توانید از قالب $$...$$ استفاده کنید. مثال: $$x^2 + y^2 = z^2$$'),
                 Forms\Components\FileUpload::make('image')
                     ->label('تصویر سوال')
                     ->image()
@@ -191,7 +112,7 @@ class QuestionResource extends Resource
                                     }
                                 '
                             ])
-                            ->helperText('می‌توانید از فرمول LaTeX استفاده کنید'),
+                            ->helperText('می‌توانید از فرمول استفاده کنید'),
                         Forms\Components\RichEditor::make('option_2')
                             ->label('گزینه ۲')
                             ->required()
@@ -219,7 +140,7 @@ class QuestionResource extends Resource
                                     }
                                 '
                             ])
-                            ->helperText('می‌توانید از فرمول LaTeX استفاده کنید'),
+                            ->helperText('می‌توانید از فرمول استفاده کنید'),
                         Forms\Components\RichEditor::make('option_3')
                             ->label('گزینه ۳')
                             ->required()
@@ -247,7 +168,7 @@ class QuestionResource extends Resource
                                     }
                                 '
                             ])
-                            ->helperText('می‌توانید از فرمول LaTeX استفاده کنید'),
+                            ->helperText('می‌توانید از فرمول استفاده کنید'),
                         Forms\Components\RichEditor::make('option_4')
                             ->label('گزینه ۴')
                             ->required()
@@ -275,7 +196,7 @@ class QuestionResource extends Resource
                                     }
                                 '
                             ])
-                            ->helperText('می‌توانید از فرمول LaTeX استفاده کنید'),
+                            ->helperText('می‌توانید از فرمول استفاده کنید'),
                     ]),
                 Forms\Components\Select::make('correct_option')
                     ->label('گزینه صحیح')
@@ -287,6 +208,71 @@ class QuestionResource extends Resource
                     ])
                     ->required()
                     ->native(false),
+                Forms\Components\Section::make('راهنمای فرمول‌نویسی')
+                    ->description('نمونه‌های آماده برای فرمول‌نویسی')
+                    ->schema([
+                        Forms\Components\Placeholder::make('formula_guide')
+                            ->content(function () {
+                                return new HtmlString(<<<'HTML'
+                                    <div class="space-y-4" dir="ltr">
+                                        <div class="bg-blue-50 p-4 rounded-lg">
+                                            <h4 class="font-bold text-blue-900 mb-2">نمونه‌های فرمول:</h4>
+                                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                                <div>
+                                                    <code class="bg-gray-100 p-1 rounded">$$x^2 + y^2 = z^2$$</code>
+                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-1"></div>
+                                                </div>
+                                                <div>
+                                                    <code class="bg-gray-100 p-1 rounded">$$\\frac{a}{b} = \\frac{c}{d}$$</code>
+                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-2"></div>
+                                                </div>
+                                                <div>
+                                                    <code class="bg-gray-100 p-1 rounded">$$\\sqrt{x^2 + 1}$$</code>
+                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-3"></div>
+                                                </div>
+                                                <div>
+                                                    <code class="bg-gray-100 p-1 rounded">$$\\sum_{i=1}^{n} x_i$$</code>
+                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-4"></div>
+                                                </div>
+                                                <div>
+                                                    <code class="bg-gray-100 p-1 rounded">$$\\int_0^\\infty e^{-x} dx$$</code>
+                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-5"></div>
+                                                </div>
+                                                <div>
+                                                    <code class="bg-gray-100 p-1 rounded">$$\\alpha + \\beta = \\gamma$$</code>
+                                                    <div class="mt-1 p-2 bg-white border rounded" id="preview-6"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+                                    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            const examples = [
+                                                ["preview-1", "x^2 + y^2 = z^2"],
+                                                ["preview-2", "\\frac{a}{b} = \\frac{c}{d}"],
+                                                ["preview-3", "\\sqrt{x^2 + 1}"],
+                                                ["preview-4", "\\sum_{i=1}^{n} x_i"],
+                                                ["preview-5", "\\int_0^\\infty e^{-x} dx"],
+                                                ["preview-6", "\\alpha + \\beta = \\gamma"]
+                                            ];
+
+                                            examples.forEach(([id, formula]) => {
+                                                const element = document.getElementById(id);
+                                                if (element && katex) {
+                                                    katex.render(formula, element, {
+                                                        throwOnError: false
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                HTML);
+                            })
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible(),
             ]);
     }
 
