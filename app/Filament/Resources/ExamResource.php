@@ -67,11 +67,9 @@ class ExamResource extends Resource
                 Forms\Components\Grid::make(2)
                     ->schema([
                         Forms\Components\DateTimePicker::make('start_time')
-                            ->label('زمان شروع')
-                            ->required(),
+                            ->label('زمان شروع'),
                         Forms\Components\DateTimePicker::make('end_time')
-                            ->label('زمان پایان')
-                            ->required(),
+                            ->label('زمان پایان'),
                     ]),
                 Forms\Components\Section::make('تنظیمات آزمون')
                     ->schema([
@@ -106,12 +104,18 @@ class ExamResource extends Resource
                                         $bankId = $get('question_bank_id');
                                         if ($bankId) {
                                             return \App\Models\Question::where('question_bank_id', $bankId)
-                                                ->pluck('title', 'id')
+                                                ->get(['id', 'title'])
+                                                ->mapWithKeys(function ($question): array {
+                                                    $title = trim(preg_replace('/\s+/', ' ', strip_tags((string) $question->title)) ?? '');
+
+                                                    return [$question->id => Str::limit($title !== '' ? $title : '-', 100)];
+                                                })
                                                 ->toArray();
                                         }
                                         return [];
                                     })
                                     ->required()
+                                    ->live()
                                     ->searchable()
                                     ->getSearchResultsUsing(function (string $search, callable $get) {
                                         $bankId = $get('question_bank_id');
@@ -119,7 +123,12 @@ class ExamResource extends Resource
                                             return \App\Models\Question::where('question_bank_id', $bankId)
                                                 ->where('title', 'like', "%{$search}%")
                                                 ->limit(50)
-                                                ->pluck('title', 'id')
+                                                ->get(['id', 'title'])
+                                                ->mapWithKeys(function ($question): array {
+                                                    $title = trim(preg_replace('/\s+/', ' ', strip_tags((string) $question->title)) ?? '');
+
+                                                    return [$question->id => Str::limit($title !== '' ? $title : '-', 100)];
+                                                })
                                                 ->toArray();
                                         }
                                         return [];
@@ -131,7 +140,9 @@ class ExamResource extends Resource
                                         if ($questionId) {
                                             $question = \App\Models\Question::find($questionId);
                                             if ($question) {
-                                                return Str::limit($question->title, 100);
+                                                $title = trim(preg_replace('/\s+/', ' ', strip_tags((string) $question->title)) ?? '');
+
+                                                return $title !== '' ? Str::limit($title, 140) : 'سوال نامعتبر است';
                                             }
                                         }
                                         return 'سوال را انتخاب کنید';
@@ -142,7 +153,7 @@ class ExamResource extends Resource
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => 
                                 isset($state['question_id']) 
-                                    ? \App\Models\Question::find($state['question_id'])?->title 
+                                    ? Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags((string) (\App\Models\Question::find($state['question_id'])?->title ?? ''))) ?? ''), 80) 
                                     : null
                             ),
                     ])

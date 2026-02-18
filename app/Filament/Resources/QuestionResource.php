@@ -318,6 +318,15 @@ class QuestionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query): Builder {
+                $questionBankId = request()->integer('question_bank_id');
+
+                if ($questionBankId > 0) {
+                    return $query->where('question_bank_id', $questionBankId);
+                }
+
+                return $query;
+            })
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->label('تصویر'),
