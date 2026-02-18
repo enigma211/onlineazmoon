@@ -9,4 +9,14 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateQuestion extends CreateRecord
 {
     protected static string $resource = QuestionResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\Action::make('back_to_list')
+                ->label('بازگشت به لیست سوالات')
+                ->icon('heroicon-o-arrow-right')
+                ->url(QuestionResource::getUrl('index')),
+        ];
+    }
 }

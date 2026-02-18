@@ -80,9 +80,9 @@ class QuestionResource extends Resource
                     ->relationship('questionBank', 'title')
                     ->searchable()
                     ->preload()
+                    ->required()
                     ->live()
-                    ->afterStateUpdated(fn (Set $set) => $set('category', null))
-                    ->nullable(),
+                    ->afterStateUpdated(fn (Set $set) => $set('category', null)),
                 Forms\Components\Select::make('category')
                     ->label('دسته‌بندی')
                     ->options(function (Get $get): array {
@@ -310,7 +310,8 @@ class QuestionResource extends Resource
                             })
                             ->columnSpanFull(),
                     ])
-                    ->collapsible(),
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 
@@ -322,6 +323,11 @@ class QuestionResource extends Resource
                     ->label('تصویر'),
                 Tables\Columns\TextColumn::make('title')
                     ->label('عنوان')
+                    ->formatStateUsing(function ($state): string {
+                        $title = trim(preg_replace('/\s+/', ' ', strip_tags((string) $state)) ?? '');
+
+                        return $title !== '' ? $title : '-';
+                    })
                     ->limit(50)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category')

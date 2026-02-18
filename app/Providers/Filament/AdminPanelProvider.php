@@ -50,17 +50,23 @@ class AdminPanelProvider extends PanelProvider
                     }
 
                     .fi-topbar .fi-avatar,
+                    .fi-topbar .fi-user-menu-trigger .fi-avatar,
                     .fi-user-menu .fi-avatar,
-                    .fi-avatar {
+                    .fi-avatar,
+                    .fi-avatar.fi-color-custom {
                         background-color: #8b5cf6 !important;
+                        background-image: none !important;
                         color: #ffffff !important;
                         border: 1px solid #7c3aed !important;
                     }
 
                     .dark .fi-topbar .fi-avatar,
+                    .dark .fi-topbar .fi-user-menu-trigger .fi-avatar,
                     .dark .fi-user-menu .fi-avatar,
-                    .dark .fi-avatar {
+                    .dark .fi-avatar,
+                    .dark .fi-avatar.fi-color-custom {
                         background-color: #a78bfa !important;
+                        background-image: none !important;
                         color: #ffffff !important;
                         border-color: #8b5cf6 !important;
                     }

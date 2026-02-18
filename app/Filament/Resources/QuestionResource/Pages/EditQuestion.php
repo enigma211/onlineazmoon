@@ -13,6 +13,10 @@ class EditQuestion extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('back_to_list')
+                ->label('بازگشت به لیست سوالات')
+                ->icon('heroicon-o-arrow-right')
+                ->url(QuestionResource::getUrl('index')),
             Actions\DeleteAction::make(),
         ];
     }
