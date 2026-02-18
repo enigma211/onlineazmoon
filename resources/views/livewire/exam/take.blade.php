@@ -112,9 +112,9 @@ new #[Layout('layouts.app')] class extends Component {
 }; ?>
 
 <!-- KaTeX for mathematical formulas -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0KOVEMeaKrumfonJpasEUgn3a5qrY3/0hU4hbCWDc8PcQ9WdknK+3A" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
     <div class="min-h-screen bg-gray-50 py-4 sm:py-8" x-data="examTimer({{ $timeLeft }})" x-init="initTimer()">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -140,6 +140,7 @@ new #[Layout('layouts.app')] class extends Component {
                         }
                     },
                     submitExam() {
+                        console.log('Submitting exam...', this.answers);
                         localStorage.removeItem('exam_{{ $exam->id }}_answers');
                         $wire.submit(this.answers);
                     },
