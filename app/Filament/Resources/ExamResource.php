@@ -198,7 +198,11 @@ class ExamResource extends Resource
                     ->offColor('danger'),
                 Tables\Columns\TextColumn::make('attempts_count')
                     ->counts('attempts')
-                    ->label('تعداد شرکت‌کنندگان'),
+                    ->label('تعداد شرکت‌کنندگان')
+                    ->formatStateUsing(fn ($state) => $state . ' نفر')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاریخ ایجاد')
                     ->formatStateUsing(fn ($state) => $state ? \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($state))->format('Y/m/d H:i') : null)
@@ -223,6 +227,19 @@ class ExamResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('view_participants')
+                    ->label('شرکت‌کنندگان')
+                    ->icon('heroicon-o-users')
+                    ->color('info')
+                    ->modalHeading(fn (Exam $record): string => 'شرکت‌کنندگان آزمون: ' . $record->title)
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('بستن')
+                    ->modalWidth('7xl')
+                    ->modalContent(fn (Exam $record) => view('filament.modals.exam-participants', [
+                        'exam' => $record->load([
+                            'attempts' => fn ($query) => $query->with('user')->latest('started_at'),
+                        ]),
+                    ])),
                 Tables\Actions\Action::make('export_results')
                     ->label('خروجی نتایج آزمون')
                     ->icon('heroicon-o-document-arrow-down')
@@ -291,6 +308,7 @@ class ExamResource extends Resource
     {
         return [
             RelationManagers\QuestionsRelationManager::class,
+            RelationManagers\AttemptsRelationManager::class,
         ];
     }
 

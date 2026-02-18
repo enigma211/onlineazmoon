@@ -1,3 +1,8 @@
+@php
+    $examQuestions = $attempt->exam->getExamQuestions()->keyBy('id');
+    $totalQuestions = count($attempt->exam->selected_question_ids ?? []);
+@endphp
+
 <div class="space-y-4">
     <h3 class="text-lg font-bold">جزئیات آزمون</h3>
     
@@ -19,16 +24,16 @@
         </div>
         <div>
             <strong>نمره:</strong> 
-            {{ $attempt->score ? $attempt->score . ' از ' . $attempt->exam->questions->count() : '-' }}
+            {{ $attempt->score !== null ? $attempt->score . ' از ' . $totalQuestions : '-' }}
         </div>
         <div>
             <strong>درصد:</strong>
-            {{ $attempt->score && $attempt->exam->questions->count() > 0 
-                ? round(($attempt->score / $attempt->exam->questions->count()) * 100, 2) . '%' 
+            {{ $attempt->score !== null && $totalQuestions > 0 
+                ? round(($attempt->score / $totalQuestions) * 100, 2) . '%' 
                 : '-' }}
         </div>
         <div>
-            <strong>زمان شروع:</strong> {{ \Morilog\Jalali\Jalalian::fromCarbon($attempt->started_at)->format('Y/m/d H:i:s') }}
+            <strong>زمان شروع:</strong> {{ $attempt->started_at ? \Morilog\Jalali\Jalalian::fromCarbon($attempt->started_at)->format('Y/m/d H:i:s') : '-' }}
         </div>
         <div>
             <strong>زمان پایان:</strong>
@@ -42,7 +47,7 @@
             <div class="space-y-2">
                 @foreach($attempt->answers as $questionId => $selectedOption)
                     @php
-                        $question = $attempt->exam->questions->where('id', $questionId)->first();
+                        $question = $examQuestions->get((int) $questionId);
                     @endphp
                     @if($question)
                         <div class="border rounded p-3">
