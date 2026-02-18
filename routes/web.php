@@ -17,4 +17,8 @@ Livewire\Volt\Volt::route('/exam/{exam}', 'exam.take')
     ->middleware(['auth'])
     ->name('exam.take');
 
+Route::post('exam-attempt/{attempt}/submit', [App\Http\Controllers\ExamSubmissionController::class, 'store'])
+    ->middleware(['auth'])
+    ->name('exam.submit.store');
+
 require __DIR__.'/auth.php';
