@@ -98,6 +98,12 @@ class AttemptsRelationManager extends RelationManager
                     ->modalContent(fn (ExamAttempt $record) => view('filament.modals.exam-attempt-details', [
                         'attempt' => $record->loadMissing(['user', 'exam']),
                     ])),
+                Tables\Actions\DeleteAction::make()
+                    ->label('ریست (حذف)')
+                    ->icon('heroicon-o-trash')
+                    ->modalHeading('حذف تلاش کاربر')
+                    ->modalDescription('آیا مطمئن هستید؟ با حذف این مورد، تمام پاسخ‌های کاربر پاک شده و می‌تواند مجدداً در آزمون شرکت کند.')
+                    ->modalSubmitActionLabel('حذف و ریست'),
             ]);
     }
 }
