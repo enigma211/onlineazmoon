@@ -52,17 +52,17 @@ class AdminPanelProvider extends PanelProvider
                     .fi-topbar .fi-avatar,
                     .fi-user-menu .fi-avatar,
                     .fi-avatar {
-                        background-color: #f3f4f6 !important;
-                        color: #111827 !important;
-                        border: 1px solid #d1d5db !important;
+                        background-color: #8b5cf6 !important;
+                        color: #ffffff !important;
+                        border: 1px solid #7c3aed !important;
                     }
 
                     .dark .fi-topbar .fi-avatar,
                     .dark .fi-user-menu .fi-avatar,
                     .dark .fi-avatar {
-                        background-color: #f9fafb !important;
-                        color: #111827 !important;
-                        border-color: #9ca3af !important;
+                        background-color: #a78bfa !important;
+                        color: #ffffff !important;
+                        border-color: #8b5cf6 !important;
                     }
 
                     @media (max-width: 1023px) {

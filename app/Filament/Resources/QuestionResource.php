@@ -3,15 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\QuestionResource\Pages;
-use App\Filament\Resources\QuestionResource\RelationManagers;
+use App\Models\QuestionBank;
 use App\Models\Question;
 use Filament\Forms;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
 
 class QuestionResource extends Resource
@@ -20,7 +21,8 @@ class QuestionResource extends Resource
 
     protected static ?string $modelLabel = 'سوال';
     protected static ?string $pluralModelLabel = 'سوالات';
-    protected static ?string $navigationLabel = 'سوالات';
+    protected static ?string $navigationLabel = 'ایجاد سوال';
+    protected static ?string $navigationGroup = 'بانک سوالات';
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
@@ -78,11 +80,47 @@ class QuestionResource extends Resource
                     ->relationship('questionBank', 'title')
                     ->searchable()
                     ->preload()
+                    ->live()
+                    ->afterStateUpdated(fn (Set $set) => $set('category', null))
                     ->nullable(),
-                Forms\Components\TextInput::make('category')
+                Forms\Components\Select::make('category')
                     ->label('دسته‌بندی')
+                    ->options(function (Get $get): array {
+                        $questionBankId = $get('question_bank_id');
+
+                        if (!$questionBankId) {
+                            return [];
+                        }
+
+                        $questionBank = QuestionBank::query()->find($questionBankId);
+
+                        if (!$questionBank) {
+                            return [];
+                        }
+
+                        $categories = Question::query()
+                            ->where('question_bank_id', $questionBankId)
+                            ->whereNotNull('category')
+                            ->where('category', '!=', '')
+                            ->distinct()
+                            ->pluck('category')
+                            ->values()
+                            ->toArray();
+
+                        if (filled($questionBank->category) && !in_array($questionBank->category, $categories, true)) {
+                            $categories[] = $questionBank->category;
+                        }
+
+                        return collect($categories)
+                            ->mapWithKeys(fn (string $category): array => [$category => $category])
+                            ->toArray();
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->native(false)
                     ->required()
-                    ->maxLength(255),
+                    ->disabled(fn (Get $get): bool => blank($get('question_bank_id')))
+                    ->helperText('ابتدا بانک سوالات را انتخاب کنید تا دسته‌بندی‌های مرتبط نمایش داده شوند.'),
                 Forms\Components\Grid::make(2)
                     ->schema([
                         Forms\Components\RichEditor::make('option_1')

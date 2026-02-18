@@ -21,6 +21,7 @@ class QuestionBankResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
     
     protected static ?string $navigationLabel = 'بانک سوالات';
+    protected static ?string $navigationGroup = 'بانک سوالات';
     
     protected static ?string $modelLabel = 'بانک سوالات';
     
