@@ -116,7 +116,9 @@ class UserManagement extends Page implements HasTable
                         ->action(function ($records) {
                             $csv = ExportService::exportUsers($records);
                             return response()->streamDownload(
-                                $csv,
+                                function () use ($csv): void {
+                                    echo $csv;
+                                },
                                 'users_export_' . date('Y-m-d_H-i-s') . '.csv',
                                 [
                                     'Content-Type' => 'text/csv; charset=utf-8',
@@ -133,7 +135,9 @@ class UserManagement extends Page implements HasTable
                     ->action(function () {
                         $csv = ExportService::exportUsers();
                         return response()->streamDownload(
-                            $csv,
+                            function () use ($csv): void {
+                                echo $csv;
+                            },
                             'all_users_export_' . date('Y-m-d_H-i-s') . '.csv',
                             [
                                 'Content-Type' => 'text/csv; charset=utf-8',

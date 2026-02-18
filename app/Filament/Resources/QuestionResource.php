@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 
 class QuestionResource extends Resource
 {
@@ -32,7 +33,7 @@ class QuestionResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('formula_guide')
                             ->content(function () {
-                                return '
+                                return new HtmlString(<<<'HTML'
                                     <div class="space-y-4" dir="ltr">
                                         <div class="bg-blue-50 p-4 rounded-lg">
                                             <h4 class="font-bold text-blue-900 mb-2">نمونه‌های فرمول:</h4>
@@ -100,7 +101,7 @@ class QuestionResource extends Resource
                                             });
                                         });
                                     </script>
-                                ';
+                                HTML);
                             })
                             ->columnSpanFull(),
                     ])

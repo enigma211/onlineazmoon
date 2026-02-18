@@ -208,7 +208,9 @@ class ExamResource extends Resource
                     ->action(function ($record) {
                         $csv = ExportService::exportExamResults($record);
                         return response()->streamDownload(
-                            $csv,
+                            function () use ($csv): void {
+                                echo $csv;
+                            },
                             'exam_' . $record->id . '_results_' . date('Y-m-d_H-i-s') . '.csv',
                             [
                                 'Content-Type' => 'text/csv; charset=utf-8',
@@ -223,7 +225,9 @@ class ExamResource extends Resource
                     ->action(function ($record) {
                         $csv = ExportService::exportExamStatistics($record);
                         return response()->streamDownload(
-                            $csv,
+                            function () use ($csv): void {
+                                echo $csv;
+                            },
                             'exam_' . $record->id . '_statistics_' . date('Y-m-d_H-i-s') . '.csv',
                             [
                                 'Content-Type' => 'text/csv; charset=utf-8',
@@ -240,7 +244,9 @@ class ExamResource extends Resource
                         ->action(function () {
                             $csv = ExportService::exportExamResults();
                             return response()->streamDownload(
-                                $csv,
+                                function () use ($csv): void {
+                                    echo $csv;
+                                },
                                 'all_exams_results_' . date('Y-m-d_H-i-s') . '.csv',
                                 [
                                     'Content-Type' => 'text/csv; charset=utf-8',

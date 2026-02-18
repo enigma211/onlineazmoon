@@ -44,6 +44,22 @@ class AdminPanelProvider extends PanelProvider
                         text-align: right;
                     }
 
+                    .fi-topbar .fi-avatar,
+                    .fi-user-menu .fi-avatar,
+                    .fi-avatar {
+                        background-color: #f3f4f6 !important;
+                        color: #111827 !important;
+                        border: 1px solid #d1d5db !important;
+                    }
+
+                    .dark .fi-topbar .fi-avatar,
+                    .dark .fi-user-menu .fi-avatar,
+                    .dark .fi-avatar {
+                        background-color: #f9fafb !important;
+                        color: #111827 !important;
+                        border-color: #9ca3af !important;
+                    }
+
                     @media (max-width: 1023px) {
                         .fi-topbar-open-sidebar-btn {
                             display: inline-flex !important;

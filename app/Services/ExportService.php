@@ -198,7 +198,7 @@ class ExportService
         
         foreach ($scoreRanges as $range => [$min, $max]) {
             $count = 0;
-            foreach ($exam->attempts()->whereNotNull('score') as $attempt) {
+            foreach ($exam->attempts()->whereNotNull('score')->get() as $attempt) {
                 $percentage = ($attempt->score / $exam->questions->count()) * 100;
                 if ($percentage >= $min && $percentage <= $max) {
                     $count++;
