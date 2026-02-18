@@ -4,18 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Exam;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class StudentDashboardController extends Controller
 {
     public function index()
     {
-        $now = Carbon::now();
         $userId = auth()->id();
         
-        // Get available exams (current and future)
-        $availableExams = Exam::where('start_time', '<=', $now)
-            ->where('end_time', '>=', $now)
+        // Show only active exams to students
+        $availableExams = Exam::active()
             ->with([
                 'questions',
                 'attempts' => function ($query) use ($userId) {
@@ -24,15 +21,17 @@ class StudentDashboardController extends Controller
             ])
             ->get();
         
-        // Get past exams
-        $pastExams = Exam::where('end_time', '<', $now)
+        // Show only exams that this user has actually attempted
+        $pastExams = Exam::whereHas('attempts', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
             ->with([
                 'questions',
                 'attempts' => function ($query) use ($userId) {
                     $query->where('user_id', $userId);
                 },
             ])
-            ->orderBy('start_time', 'desc')
+            ->latest('created_at')
             ->get();
         
         return view('student.dashboard', compact('availableExams', 'pastExams'));

@@ -75,7 +75,7 @@ class ExamResource extends Resource
                     ->schema([
                         Forms\Components\Toggle::make('is_active')
                             ->label('فعال بودن آزمون')
-                            ->default(true)
+                            ->default(false)
                             ->helperText('در صورت غیرفعال بودن، آزمون برای کاربران نمایش داده نمی‌شود'),
                         Forms\Components\TextInput::make('max_questions')
                             ->label('تعداد سوالات آزمون')
@@ -85,10 +85,11 @@ class ExamResource extends Resource
                             ->helperText('تعداد سوالاتی که در آزمون نمایش داده می‌شود'),
                     ]),
                 Forms\Components\Section::make('انتخاب سوالات از بانک')
-                    ->description('سوالات مورد نظر خود را از بانک سوالات انتخاب کنید')
+                    ->description('برای هر ردیف ابتدا بانک سوالات را انتخاب کنید، سپس سوال همان بانک را انتخاب کنید. سوال تکراری قابل انتخاب نیست.')
                     ->schema([
                         Forms\Components\Repeater::make('selected_questions')
                             ->label('سوالات انتخاب شده')
+                            ->helperText('هر سوال فقط یک‌بار در این آزمون قابل انتخاب است.')
                             ->schema([
                                 Forms\Components\Select::make('question_bank_id')
                                     ->label('بانک سوالات')
@@ -116,7 +117,11 @@ class ExamResource extends Resource
                                     })
                                     ->required()
                                     ->live()
+                                    ->native(false)
                                     ->searchable()
+                                    ->placeholder('ابتدا بانک سوالات را انتخاب کنید')
+                                    ->disabled(fn (callable $get): bool => blank($get('question_bank_id')))
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->getSearchResultsUsing(function (string $search, callable $get) {
                                         $bankId = $get('question_bank_id');
                                         if ($bankId) {
@@ -135,6 +140,7 @@ class ExamResource extends Resource
                                     }),
                                 Forms\Components\Placeholder::make('question_preview')
                                     ->label('پیش‌نمایش سوال')
+                                    ->columnSpanFull()
                                     ->content(function (callable $get) {
                                         $questionId = $get('question_id');
                                         if ($questionId) {
@@ -145,10 +151,11 @@ class ExamResource extends Resource
                                                 return $title !== '' ? Str::limit($title, 140) : 'سوال نامعتبر است';
                                             }
                                         }
-                                        return 'سوال را انتخاب کنید';
+                                        return 'پس از انتخاب سوال، پیش‌نمایش اینجا نمایش داده می‌شود';
                                     }),
                             ])
                             ->columns(2)
+                            ->defaultItems(1)
                             ->addActionLabel('افزودن سوال')
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => 
@@ -185,6 +192,10 @@ class ExamResource extends Resource
                     ->label('رشته تحصیلی')
                     ->searchable()
                     ->placeholder('همه رشته‌ها'),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('وضعیت نمایش')
+                    ->onColor('success')
+                    ->offColor('danger'),
                 Tables\Columns\TextColumn::make('attempts_count')
                     ->counts('attempts')
                     ->label('تعداد شرکت‌کنندگان'),

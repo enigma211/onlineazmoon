@@ -8,6 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Exam extends Model
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::saving(function (Exam $exam): void {
+            $exam->is_active ??= false;
+            $exam->start_time ??= now();
+            $exam->end_time ??= $exam->start_time;
+        });
+    }
+
     protected $fillable = [
         'title',
         'description',
@@ -101,7 +111,12 @@ class Exam extends Model
      */
     public function getSelectedQuestionIdsAttribute()
     {
-        return collect($this->selected_questions ?? [])->pluck('question_id')->filter()->toArray();
+        return collect($this->selected_questions ?? [])
+            ->pluck('question_id')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
     }
 
     /**
@@ -118,9 +133,7 @@ class Exam extends Model
      */
     public function isCurrentlyActive(): bool
     {
-        return $this->is_active 
-            && $this->start_time <= now() 
-            && $this->end_time >= now();
+        return (bool) $this->is_active;
     }
 
     /**
@@ -128,19 +141,7 @@ class Exam extends Model
      */
     public function getStatusTextAttribute(): string
     {
-        if (!$this->is_active) {
-            return 'غیرفعال';
-        }
-        
-        if (now() < $this->start_time) {
-            return 'شروع نشده';
-        }
-        
-        if (now() > $this->end_time) {
-            return 'پایان یافته';
-        }
-        
-        return 'در حال برگزاری';
+        return $this->is_active ? 'فعال' : 'غیرفعال';
     }
 
     /**
@@ -156,8 +157,6 @@ class Exam extends Model
      */
     public function scopeRunning($query)
     {
-        return $query->where('is_active', true)
-            ->where('start_time', '<=', now())
-            ->where('end_time', '>=', now());
+        return $query->where('is_active', true);
     }
 }

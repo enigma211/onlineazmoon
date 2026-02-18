@@ -6,7 +6,6 @@ use App\Models\Question;
 use App\Models\ExamAttempt;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 new class extends Component {
     public Exam $exam;
@@ -20,14 +19,13 @@ new class extends Component {
         $this->exam = $exam;
         $user = Auth::user();
 
-        // Check availability
-        $now = Carbon::now();
-        if (!$exam->is_active || $now->lt($exam->start_time) || $now->gt($exam->end_time)) {
-            // Check if user has an active attempt that is not finished?
-            // If exam time is over, they can't start.
+        // Check availability (only active exams are accessible)
+        if (!$exam->is_active) {
             $this->redirect(route('dashboard')); 
             return;
         }
+
+        $now = now();
 
         // Check for existing attempt
         $this->attempt = ExamAttempt::where('user_id', $user->id)
@@ -77,6 +75,10 @@ new class extends Component {
 
     public function submit($clientAnswers = [])
     {
+        if (!$this->exam->fresh()->is_active) {
+            return $this->redirect(route('dashboard'), navigate: true);
+        }
+
         // Collect answers from client side
         $answersToSave = [];
         
@@ -92,7 +94,7 @@ new class extends Component {
 
         if ($this->attempt) {
             $this->attempt->update([
-                'finished_at' => Carbon::now(),
+                'finished_at' => now(),
                 'answers' => $answersToSave,
                 'status' => 'processing',
             ]);
