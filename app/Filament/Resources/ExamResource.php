@@ -307,7 +307,6 @@ class ExamResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\QuestionsRelationManager::class,
             RelationManagers\AttemptsRelationManager::class,
         ];
     }

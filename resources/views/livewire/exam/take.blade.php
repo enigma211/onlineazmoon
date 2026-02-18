@@ -63,7 +63,7 @@ new #[Layout('layouts.app')] class extends Component {
         
         // Load questions (Eager Loading / Bulk Load)
         // Randomize questions
-        $this->questions = $exam->questions()->get()->shuffle()->map(function ($q) {
+        $this->questions = $exam->getExamQuestions()->shuffle()->map(function ($q) {
             $options = [
                 ['id' => 1, 'text' => $q->option_1],
                 ['id' => 2, 'text' => $q->option_2],
