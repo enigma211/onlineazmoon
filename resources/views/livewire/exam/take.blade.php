@@ -1,14 +1,16 @@
 <?php
 
 use Livewire\Volt\Component;
-use Livewire\Attributes\Layout;
 use App\Models\Exam;
 use App\Models\Question;
 use App\Models\ExamAttempt;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use function Livewire\Volt\layout;
 
-new #[Layout('layouts.app')] class extends Component {
+layout('layouts.app');
+
+new class extends Component {
     public Exam $exam;
     public ?ExamAttempt $attempt = null;
     public Collection $questions;
