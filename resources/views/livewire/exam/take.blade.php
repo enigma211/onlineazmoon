@@ -141,16 +141,9 @@ new #[Layout('layouts.app')] class extends Component {
                         }
                     },
                     submitExam() {
-                        if (this.isSubmitting) return;
-                        this.isSubmitting = true;
-                        const payload = JSON.parse(JSON.stringify(this.answers));
-                        $wire.submit(payload)
-                            .then(() => {
-                                localStorage.removeItem('exam_{{ $exam->id }}_answers');
-                            })
-                            .catch(() => {
-                                this.isSubmitting = false;
-                            });
+                        $wire.submit(this.answers).then(() => {
+                            localStorage.removeItem('exam_{{ $exam->id }}_answers');
+                        });
                     },
                     handleTimeUp() {
                         this.isTimeUp = true;
@@ -208,12 +201,12 @@ new #[Layout('layouts.app')] class extends Component {
                         <!-- Final Submit Button - Only shown on last question -->
                         <div x-show="currentStep === totalSteps - 1" class="w-full sm:w-auto order-1 sm:order-3">
                             <button 
-                                @click.prevent="submitExam()"
-                                :disabled="isSubmitting"
+                                type="button"
+                                @click="$wire.submit(answers).then(() => { localStorage.removeItem('exam_{{ $exam->id }}_answers'); })"
                                 wire:loading.attr="disabled"
                                 wire:target="submit"
                                 class="w-full sm:w-32 px-4 py-2 sm:py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base">
-                                <span wire:loading.remove>پایان آزمون و ثبت نهایی</span>
+                                <span wire:loading.remove wire:target="submit">پایان آزمون و ثبت نهایی</span>
                                 <span wire:loading wire:target="submit" class="flex items-center">
                                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -283,9 +276,10 @@ new #[Layout('layouts.app')] class extends Component {
                 }, 1000);
             },
             formatTime(seconds) {
-                const h = Math.floor(seconds / 3600);
-                const m = Math.floor((seconds % 3600) / 60);
-                const s = seconds % 60;
+                const totalSeconds = Math.floor(seconds);
+                const h = Math.floor(totalSeconds / 3600);
+                const m = Math.floor((totalSeconds % 3600) / 60);
+                const s = totalSeconds % 60;
                 return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
             }
         }
