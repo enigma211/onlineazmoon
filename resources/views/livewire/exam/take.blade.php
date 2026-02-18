@@ -151,12 +151,15 @@ new #[Layout('layouts.app')] class extends Component {
                         console.log('Submitting exam...', rawAnswers);
                         
                         try {
-                            // Call Livewire method
-                            await $wire.submit(rawAnswers);
+                            // Call Livewire method explicitly
+                            await $wire.call('submit', rawAnswers);
                             console.log('Livewire submit call finished');
                             
                             // Only clear local storage if successful
                             localStorage.removeItem('exam_{{ $exam->id }}_answers');
+
+                            // Force navigation in case Livewire redirect is suppressed by client state
+                            window.location.assign('{{ route('dashboard') }}');
                         } catch (e) {
                             console.error('Submit error:', e);
                             alert('خطا در ثبت آزمون. لطفا مجددا تلاش کنید یا اتصال اینترنت خود را بررسی نمایید.');
