@@ -12,7 +12,7 @@
         body { font-family: 'Vazirmatn', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 min-h-screen flex flex-col">
     <!-- Header -->
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
@@ -46,7 +46,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
         <!-- Welcome Section -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-2">خوش آمدید، {{ auth()->user()->name }} {{ auth()->user()->family }}!</h2>
@@ -74,12 +74,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
                                     <span class="truncate">مدت: {{ $exam->duration_minutes }} دقیقه</span>
-                                </div>
-                                <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    <span class="truncate">شروع: {{ \Morilog\Jalali\Jalalian::fromDateTime($exam->start_time)->format('Y/m/d H:i') }}</span>
                                 </div>
                                 <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,7 +175,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-12">
+    <footer class="bg-white border-t border-gray-200 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <p class="text-center text-sm text-gray-500">
                 &copy; {{ date('Y') }} {{ $siteName }}. تمامی حقوق محفوظ است.

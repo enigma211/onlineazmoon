@@ -17,6 +17,7 @@ new class extends Component {
     public function mount(Exam $exam)
     {
         $this->exam = $exam;
+        $this->questions = collect();
         $user = Auth::user();
 
         // Check availability (only active exams are accessible)
@@ -39,7 +40,8 @@ new class extends Component {
             }
             
             // Resume attempt
-            $elapsed = $this->attempt->started_at->diffInSeconds($now);
+            $startedAt = $this->attempt->started_at ?? $now;
+            $elapsed = $startedAt->diffInSeconds($now);
             $this->timeLeft = max(0, ($exam->duration_minutes * 60) - $elapsed);
         } else {
             // Start new attempt
