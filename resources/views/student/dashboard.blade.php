@@ -85,9 +85,10 @@
 
                             @php
                                 $userAttempt = $exam->attempts->first();
+                                $isFinalizedAttempt = $userAttempt && in_array($userAttempt->status, ['processing', 'completed', 'passed', 'failed'], true);
                             @endphp
 
-                            @if($userAttempt)
+                            @if($isFinalizedAttempt)
                                 <div class="@if($userAttempt->status === 'passed') bg-green-50 border-green-200 @elseif($userAttempt->status === 'failed') bg-red-50 border-red-200 @else bg-blue-50 border-blue-200 @endif rounded-lg p-2.5 sm:p-3 mb-3 sm:mb-4">
                                     <p class="text-xs sm:text-sm @if($userAttempt->status === 'passed') text-green-800 @elseif($userAttempt->status === 'failed') text-red-800 @else text-blue-800 @endif font-medium">
                                         @if($userAttempt->status === 'passed') ✅ قبول شد
@@ -104,6 +105,10 @@
                                         </p>
                                     @endif
                                 </div>
+                            @elseif($userAttempt)
+                                <a href="{{ route('exam.take', $exam->id) }}" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
+                                    ادامه آزمون
+                                </a>
                             @else
                                 <a href="{{ route('exam.take', $exam->id) }}" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
                                     شروع آزمون

@@ -36,7 +36,7 @@ new class extends Component {
             ->first();
 
         if ($this->attempt) {
-            if (in_array($this->attempt->status, ['completed', 'processing', 'failed'])) {
+            if (in_array($this->attempt->status, ['completed', 'processing', 'passed', 'failed'], true)) {
                 $this->redirect(route('dashboard'));
                 return;
             }
