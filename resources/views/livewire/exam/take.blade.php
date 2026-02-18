@@ -130,6 +130,7 @@ new #[Layout('layouts.app')] class extends Component {
                     totalSteps: {{ $questions->count() }},
                     answers: {}, 
                     isTimeUp: false,
+                    isSubmitting: false,
                     saveLocal() {
                         localStorage.setItem('exam_{{ $exam->id }}_answers', JSON.stringify(this.answers));
                     },
@@ -140,7 +141,16 @@ new #[Layout('layouts.app')] class extends Component {
                         }
                     },
                     submitExam() {
-                        $wire.submit(this.answers);
+                        if (this.isSubmitting) return;
+                        this.isSubmitting = true;
+                        const payload = JSON.parse(JSON.stringify(this.answers));
+                        $wire.submit(payload)
+                            .then(() => {
+                                localStorage.removeItem('exam_{{ $exam->id }}_answers');
+                            })
+                            .catch(() => {
+                                this.isSubmitting = false;
+                            });
                     },
                     handleTimeUp() {
                         this.isTimeUp = true;
@@ -198,11 +208,13 @@ new #[Layout('layouts.app')] class extends Component {
                         <!-- Final Submit Button - Only shown on last question -->
                         <div x-show="currentStep === totalSteps - 1" class="w-full sm:w-auto order-1 sm:order-3">
                             <button 
-                                @click="submitExam()"
+                                @click.prevent="submitExam()"
+                                :disabled="isSubmitting"
                                 wire:loading.attr="disabled"
-                                class="w-full sm:w-auto px-6 py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                                wire:target="submit"
+                                class="w-full sm:w-32 px-4 py-2 sm:py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base">
                                 <span wire:loading.remove>پایان آزمون و ثبت نهایی</span>
-                                <span wire:loading class="flex items-center">
+                                <span wire:loading wire:target="submit" class="flex items-center">
                                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

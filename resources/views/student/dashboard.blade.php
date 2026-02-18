@@ -79,38 +79,44 @@
                                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>
-                                    <span class="truncate">سوالات: {{ $exam->questions->count() }}</span>
+                                    <span class="truncate">سوالات: {{ count($exam->selected_question_ids ?? []) }}</span>
                                 </div>
                             </div>
 
                             @php
                                 $userAttempt = $exam->attempts->first();
+                                $questionCount = count($exam->selected_question_ids ?? []);
+                                $isTimedOutInProgress = $userAttempt
+                                    && $userAttempt->status === 'in_progress'
+                                    && $userAttempt->started_at
+                                    && $userAttempt->started_at->copy()->addMinutes((int) $exam->duration_minutes)->isPast();
                                 $isFinalizedAttempt = $userAttempt && in_array($userAttempt->status, ['processing', 'completed', 'passed', 'failed'], true);
                             @endphp
 
-                            @if($isFinalizedAttempt)
+                            @if($isFinalizedAttempt || $isTimedOutInProgress)
                                 <div class="@if($userAttempt->status === 'passed') bg-green-50 border-green-200 @elseif($userAttempt->status === 'failed') bg-red-50 border-red-200 @else bg-blue-50 border-blue-200 @endif rounded-lg p-2.5 sm:p-3 mb-3 sm:mb-4">
                                     <p class="text-xs sm:text-sm @if($userAttempt->status === 'passed') text-green-800 @elseif($userAttempt->status === 'failed') text-red-800 @else text-blue-800 @endif font-medium">
                                         @if($userAttempt->status === 'passed') ✅ قبول شد
                                         @elseif($userAttempt->status === 'failed') ❌ مردود شد
+                                        @elseif($isTimedOutInProgress) ⏰ زمان آزمون به پایان رسیده است
                                         @else 📝 در حال بررسی
                                         @endif - شما قبلاً در این آزمون شرکت کرده‌اید
                                     </p>
                                     @if($userAttempt->score !== null)
                                         <p class="text-xs @if($userAttempt->status === 'passed') text-green-600 @elseif($userAttempt->status === 'failed') text-red-600 @else text-blue-600 @endif mt-1">
-                                            نمره: {{ $userAttempt->score }} از {{ $exam->questions->count() }}
-                                            @if($exam->hasPassingScore() && $exam->questions->count() > 0)
-                                                ({{ round(($userAttempt->score / $exam->questions->count()) * 100, 1) }}% - حد نصاب: {{ $exam->passing_score }}%)
+                                            نمره: {{ $userAttempt->score }} از {{ $questionCount }}
+                                            @if($exam->hasPassingScore() && $questionCount > 0)
+                                                ({{ round(($userAttempt->score / $questionCount) * 100, 1) }}% - حد نصاب: {{ $exam->passing_score }}%)
                                             @endif
                                         </p>
                                     @endif
                                 </div>
                             @elseif($userAttempt)
-                                <a href="{{ route('exam.take', $exam->id) }}" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 bg-blue-600 hover:bg-blue-700 text-white text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
+                                <a href="{{ route('exam.take', $exam->id) }}" style="background-color: #2563eb; color: #ffffff;" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 hover:bg-blue-700 text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
                                     ادامه آزمون
                                 </a>
                             @else
-                                <a href="{{ route('exam.take', $exam->id) }}" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 bg-red-600 hover:bg-red-700 text-white text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
+                                <a href="{{ route('exam.take', $exam->id) }}" style="background-color: #dc2626; color: #ffffff;" class="block w-full py-2 sm:py-2.5 px-3 sm:px-4 hover:bg-red-700 text-center font-bold rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base">
                                     شروع آزمون
                                 </a>
                             @endif
