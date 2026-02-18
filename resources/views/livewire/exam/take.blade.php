@@ -130,7 +130,6 @@ new #[Layout('layouts.app')] class extends Component {
                     totalSteps: {{ $questions->count() }},
                     answers: {}, 
                     isTimeUp: false,
-                    isSubmitting: false,
                     saveLocal() {
                         localStorage.setItem('exam_{{ $exam->id }}_answers', JSON.stringify(this.answers));
                     },
@@ -141,13 +140,11 @@ new #[Layout('layouts.app')] class extends Component {
                         }
                     },
                     submitExam() {
-                        $wire.submit(this.answers).then(() => {
-                            localStorage.removeItem('exam_{{ $exam->id }}_answers');
-                        });
+                        localStorage.removeItem('exam_{{ $exam->id }}_answers');
+                        $wire.submit(this.answers);
                     },
                     handleTimeUp() {
                         this.isTimeUp = true;
-                        // Show timeout message briefly, then submit
                         setTimeout(() => {
                             this.submitExam();
                         }, 3000);
@@ -202,11 +199,11 @@ new #[Layout('layouts.app')] class extends Component {
                         <div x-show="currentStep === totalSteps - 1" class="w-full sm:w-auto order-1 sm:order-3">
                             <button 
                                 type="button"
-                                @click="$wire.submit(answers).then(() => { localStorage.removeItem('exam_{{ $exam->id }}_answers'); })"
+                                @click="submitExam()"
                                 wire:loading.attr="disabled"
                                 wire:target="submit"
                                 class="w-full sm:w-32 px-4 py-2 sm:py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base">
-                                <span wire:loading.remove wire:target="submit">پایان آزمون و ثبت نهایی</span>
+                                <span wire:loading.remove wire:target="submit">پایان آزمون</span>
                                 <span wire:loading wire:target="submit" class="flex items-center">
                                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
