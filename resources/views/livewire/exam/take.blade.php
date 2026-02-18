@@ -220,36 +220,37 @@ new #[Layout('layouts.app')] class extends Component {
                         <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" 
                              :style="'width: ' + ((currentStep + 1) / totalSteps * 100) + '%'"></div>
                     </div>
+
+                    <!-- Timeout Message Overlay -->
+                    <div x-show="isTimeUp" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+                        <div class="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
+                            <div class="mb-4">
+                                <svg class="w-16 h-16 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">زمان آزمون به پایان رسید!</h3>
+                            <p class="text-gray-600 mb-6">
+                                پاسخ‌های شما به صورت خودکار ثبت می‌شود و به پنل کاربری خود هدایت خواهید شد.
+                            </p>
+                            <div class="flex items-center justify-center">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+                                <span class="mr-3 text-gray-600">در حال ثبت پاسخ‌ها...</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Timeout Message Overlay -->
-    <div x-show="isTimeUp" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
-            <div class="mb-4">
-                <svg class="w-16 h-16 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">زمان آزمون به پایان رسید!</h3>
-            <p class="text-gray-600 mb-6">
-                پاسخ‌های شما به صورت خودکار ثبت می‌شود و به پنل کاربری خود هدایت خواهید شد.
-            </p>
-            <div class="flex items-center justify-center">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
-                <span class="mr-3 text-gray-600">در حال ثبت پاسخ‌ها...</span>
-            </div>
-        </div>
-    </div>
 <script>
     function examTimer(initialTime) {
         return {
