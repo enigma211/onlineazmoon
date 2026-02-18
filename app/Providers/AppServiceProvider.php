@@ -23,10 +23,16 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('*', function ($view): void {
             $settings = SiteSettings::all();
+            $siteDescription = config('app.description', '');
+
+            if (array_key_exists('site_description', $settings)) {
+                $description = $settings['site_description'];
+                $siteDescription = is_string($description) ? trim($description) : '';
+            }
 
             $view->with('siteSettings', $settings);
             $view->with('siteName', $settings['site_name'] ?? config('app.name', 'سامانه آزمون‌ها'));
-            $view->with('siteDescription', $settings['site_description'] ?? config('app.description', 'سامانه آزمون‌های دفتر مقررات ملی ساختمان'));
+            $view->with('siteDescription', $siteDescription);
             $view->with('siteLogoUrl', SiteSettings::logoUrl());
             $view->with('siteFaviconUrl', SiteSettings::faviconUrl());
         });

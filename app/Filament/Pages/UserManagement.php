@@ -20,6 +20,8 @@ class UserManagement extends Page implements HasTable
 {
     use InteractsWithTable;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-users';
     
     protected static ?string $navigationLabel = 'مدیریت کاربران';
@@ -31,6 +33,11 @@ class UserManagement extends Page implements HasTable
     protected static ?string $title = 'مدیریت کاربران';
     
     protected static string $view = 'filament.pages.user-management';
+
+    public static function canAccess(): bool
+    {
+        return false;
+    }
     
     public function table(Table $table): Table
     {

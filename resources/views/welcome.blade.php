@@ -22,9 +22,11 @@
             <h1 class="text-2xl sm:text-3xl font-black text-gray-800 mb-2 sm:mb-3 leading-tight tracking-tight">
                 {{ $siteName }}
             </h1>
-            <h2 class="text-lg sm:text-xl font-bold text-gray-600 mb-8 sm:mb-10 leading-relaxed">
-                {{ $siteDescription }}
-            </h2>
+            @if(filled($siteDescription))
+                <h2 class="text-lg sm:text-xl font-bold text-gray-600 mb-8 sm:mb-10 leading-relaxed">
+                    {{ $siteDescription }}
+                </h2>
+            @endif
 
             <div class="space-y-3 sm:space-y-4">
                 <a href="{{ route('login') }}" class="block w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 transition-all duration-200 transform hover:-translate-y-1 focus:ring-4 focus:ring-red-500/20 text-sm sm:text-base">

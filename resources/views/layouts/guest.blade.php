@@ -25,9 +25,11 @@
             <h1 class="text-2xl sm:text-3xl font-black text-gray-800 mb-2 sm:mb-3 leading-tight tracking-tight">
                 {{ $siteName }}
             </h1>
-            <h2 class="text-lg sm:text-xl font-bold text-gray-600 mb-6 sm:mb-8 leading-relaxed">
-                {{ $siteDescription }}
-            </h2>
+            @if(filled($siteDescription))
+                <h2 class="text-lg sm:text-xl font-bold text-gray-600 mb-6 sm:mb-8 leading-relaxed">
+                    {{ $siteDescription }}
+                </h2>
+            @endif
 
             {{ $slot }}
         </div>

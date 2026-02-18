@@ -21,7 +21,9 @@
                     <img src="{{ $siteLogoUrl }}" alt="{{ $siteName }}" class="h-12 sm:h-14 md:h-16 w-auto">
                     <div class="min-w-0 flex-1 sm:flex-none">
                         <h1 class="text-lg sm:text-xl font-bold text-gray-800 truncate">پروفایل کاربری</h1>
-                        <p class="text-xs sm:text-sm text-gray-600 hidden sm:block">{{ $siteDescription }}</p>
+                        @if(filled($siteDescription))
+                            <p class="text-xs sm:text-sm text-gray-600 hidden sm:block">{{ $siteDescription }}</p>
+                        @endif
                     </div>
                 </div>
                 <div class="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">

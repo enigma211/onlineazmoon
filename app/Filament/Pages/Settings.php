@@ -31,9 +31,16 @@ class Settings extends Page
     public function mount(): void
     {
         $settings = $this->getSiteSettings();
+
+        $siteDescription = config('app.description', '');
+        if (array_key_exists('site_description', $settings)) {
+            $description = $settings['site_description'];
+            $siteDescription = is_string($description) ? $description : '';
+        }
+
         $this->form->fill([
             'site_name' => $settings['site_name'] ?? config('app.name', 'سامانه آزمون‌ها'),
-            'site_description' => $settings['site_description'] ?? config('app.description', 'سامانه آزمون‌های دفتر مقررات ملی ساختمان'),
+            'site_description' => $siteDescription,
             'enable_registration' => $settings['enable_registration'] ?? true,
             'site_logo' => $settings['site_logo'] ?? null,
             'site_favicon' => $settings['site_favicon'] ?? null,
