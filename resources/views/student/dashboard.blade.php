@@ -47,6 +47,12 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
+        @if (session('status'))
+            <div class="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-green-800 text-sm sm:text-base">
+                {{ session('status') }}
+            </div>
+        @endif
+
         <!-- Welcome Section -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-2">خوش آمدید، {{ auth()->user()->name }} {{ auth()->user()->family }}!</h2>
@@ -90,7 +96,8 @@
                                     && $userAttempt->status === 'in_progress'
                                     && $userAttempt->started_at
                                     && $userAttempt->started_at->copy()->addMinutes((int) $exam->duration_minutes)->isPast();
-                                $isFinalizedAttempt = $userAttempt && in_array($userAttempt->status, ['processing', 'completed', 'passed', 'failed'], true);
+                                $isFinalizedAttempt = $userAttempt
+                                    && ($userAttempt->finished_at || in_array($userAttempt->status, ['processing', 'completed', 'passed', 'failed'], true));
                             @endphp
 
                             @if($isFinalizedAttempt || $isTimedOutInProgress)

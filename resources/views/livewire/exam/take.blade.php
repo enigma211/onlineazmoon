@@ -36,7 +36,7 @@ new #[Layout('layouts.app')] class extends Component {
             ->first();
 
         if ($this->attempt) {
-            if (in_array($this->attempt->status, ['completed', 'processing', 'passed', 'failed'], true)) {
+            if ($this->attempt->finished_at || in_array($this->attempt->status, ['completed', 'processing', 'passed', 'failed'], true)) {
                 $this->redirect(route('dashboard'));
                 return;
             }
@@ -114,6 +114,8 @@ new #[Layout('layouts.app')] class extends Component {
             \App\Jobs\ProcessExamAttempt::dispatch($this->attempt);
         }
 
+        session()->flash('status', 'پاسخ‌های آزمون با موفقیت ثبت شد و نتیجه در حال پردازش است.');
+
         return $this->redirect(route('dashboard'), navigate: true);
     }
 }; ?>
@@ -157,9 +159,6 @@ new #[Layout('layouts.app')] class extends Component {
                             
                             // Only clear local storage if successful
                             localStorage.removeItem('exam_{{ $exam->id }}_answers');
-
-                            // Force navigation in case Livewire redirect is suppressed by client state
-                            window.location.assign('{{ route('dashboard') }}');
                         } catch (e) {
                             console.error('Submit error:', e);
                             alert('خطا در ثبت آزمون. لطفا مجددا تلاش کنید یا اتصال اینترنت خود را بررسی نمایید.');
