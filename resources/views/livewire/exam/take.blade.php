@@ -79,7 +79,14 @@ new #[Layout('layouts.app')] class extends Component {
 
     public function submit($clientAnswers = [])
     {
+        \Illuminate\Support\Facades\Log::info('Exam submission started', [
+            'exam_id' => $this->exam->id,
+            'user_id' => Auth::id(),
+            'answers_received' => $clientAnswers
+        ]);
+
         if (!$this->exam->fresh()->is_active) {
+            \Illuminate\Support\Facades\Log::warning('Exam is not active', ['exam_id' => $this->exam->id]);
             return $this->redirect(route('dashboard'), navigate: true);
         }
 
@@ -139,10 +146,21 @@ new #[Layout('layouts.app')] class extends Component {
                             this.answers = JSON.parse(saved);
                         }
                     },
-                    submitExam() {
-                        console.log('Submitting exam...', this.answers);
-                        localStorage.removeItem('exam_{{ $exam->id }}_answers');
-                        $wire.submit(this.answers);
+                    async submitExam() {
+                        const rawAnswers = JSON.parse(JSON.stringify(this.answers));
+                        console.log('Submitting exam...', rawAnswers);
+                        
+                        try {
+                            // Call Livewire method
+                            await $wire.submit(rawAnswers);
+                            console.log('Livewire submit call finished');
+                            
+                            // Only clear local storage if successful
+                            localStorage.removeItem('exam_{{ $exam->id }}_answers');
+                        } catch (e) {
+                            console.error('Submit error:', e);
+                            alert('خطا در ثبت آزمون. لطفا مجددا تلاش کنید یا اتصال اینترنت خود را بررسی نمایید.');
+                        }
                     },
                     handleTimeUp() {
                         this.isTimeUp = true;
