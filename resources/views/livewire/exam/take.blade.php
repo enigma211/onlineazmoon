@@ -6,6 +6,7 @@ use App\Models\Question;
 use App\Models\ExamAttempt;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use function Livewire\Volt\layout;
 
 layout('layouts.app');
 
