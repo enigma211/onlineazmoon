@@ -138,7 +138,6 @@ new #[Layout('layouts.app')] class extends Component {
                     currentStep: 0, 
                     totalSteps: {{ $questions->count() }},
                     answers: {}, 
-                    isSubmitting: false,
                     isTimeUp: false,
                     saveLocal() {
                         localStorage.setItem('exam_{{ $exam->id }}_answers', JSON.stringify(this.answers));
@@ -150,41 +149,18 @@ new #[Layout('layouts.app')] class extends Component {
                         }
                     },
                     async submitExam() {
-                        this.isSubmitting = true;
                         const rawAnswers = JSON.parse(JSON.stringify(this.answers));
-                        console.log('Submitting exam via POST...', rawAnswers);
+                        console.log('Submitting exam...', rawAnswers);
                         
                         try {
-                            const form = document.createElement('form');
-                            form.method = 'POST';
-                            form.action = '{{ route('exam.submit.store', $attempt->id) }}';
-                            form.style.display = 'none';
-
-                            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                            const csrfInput = document.createElement('input');
-                            csrfInput.type = 'hidden';
-                            csrfInput.name = '_token';
-                            csrfInput.value = csrfToken;
-                            form.appendChild(csrfInput);
-
-                            // Add answers as array inputs
-                            for (const [key, value] of Object.entries(rawAnswers)) {
-                                const input = document.createElement('input');
-                                input.type = 'hidden';
-                                input.name = `answers[${key}]`;
-                                input.value = value;
-                                form.appendChild(input);
-                            }
-
-                            document.body.appendChild(form);
+                            // Call Livewire method explicitly
+                            await $wire.call('submit', rawAnswers);
+                            console.log('Livewire submit call finished');
                             
-                            // Clear local storage before submit
+                            // Only clear local storage if successful
                             localStorage.removeItem('exam_{{ $exam->id }}_answers');
-                            
-                            form.submit();
                         } catch (e) {
                             console.error('Submit error:', e);
-                            this.isSubmitting = false;
                             alert('خطا در ثبت آزمون. لطفا مجددا تلاش کنید یا اتصال اینترنت خود را بررسی نمایید.');
                         }
                     },
@@ -245,10 +221,11 @@ new #[Layout('layouts.app')] class extends Component {
                             <button 
                                 type="button"
                                 @click="submitExam()"
-                                :disabled="isSubmitting"
+                                wire:loading.attr="disabled"
+                                wire:target="submit"
                                 class="w-full sm:w-32 px-4 py-2 sm:py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base">
-                                <span x-show="!isSubmitting">پایان آزمون</span>
-                                <span x-show="isSubmitting" class="flex items-center">
+                                <span wire:loading.remove wire:target="submit">پایان آزمون</span>
+                                <span wire:loading wire:target="submit" class="flex items-center">
                                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
