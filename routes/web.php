@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentDashboardController;
+use App\Http\Controllers\ExamController;
 
 Route::view('/', 'welcome');
 
@@ -13,8 +14,9 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Livewire\Volt\Volt::route('/exam/{exam}', 'exam.take')
-    ->middleware(['auth'])
-    ->name('exam.take');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/exam/{exam}', [ExamController::class, 'show'])->name('exam.take');
+    Route::post('/exam/{exam}/submit', [ExamController::class, 'submit'])->name('exam.submit');
+});
 
 require __DIR__.'/auth.php';
