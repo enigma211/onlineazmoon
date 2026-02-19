@@ -24,11 +24,10 @@ class AttemptsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('user_full_name')
                     ->label('نام و نام خانوادگی')
                     ->state(fn (ExamAttempt $record): string => trim(($record->user->name ?? '') . ' ' . ($record->user->family ?? '')) ?: '-')
-                    ->searchable(query: function ($query, string $search) {
-                        $query->whereHas('user', function ($userQuery) use ($search): void {
-                            $userQuery
-                                ->where('name', 'like', "%{$search}%")
-                                ->orWhere('family', 'like', "%{$search}%");
+                    ->searchable(query: function ($query, string $search): void {
+                        $query->whereHas('user', function ($q) use ($search): void {
+                            $q->where('name', 'like', "%{$search}%")
+                              ->orWhere('family', 'like', "%{$search}%");
                         });
                     }),
                 Tables\Columns\TextColumn::make('user.national_code')
@@ -41,30 +40,50 @@ class AttemptsRelationManager extends RelationManager
                     ->label('وضعیت')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'completed', 'passed' => 'success',
+                        'passed'     => 'success',
+                        'completed'  => 'info',
                         'processing' => 'warning',
-                        'failed' => 'danger',
-                        'in_progress' => 'info',
-                        default => 'gray',
+                        'failed'     => 'danger',
+                        'in_progress'=> 'gray',
+                        default      => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'completed' => 'تکمیل‌شده',
-                        'passed' => 'قبول',
-                        'processing' => 'در حال پردازش',
-                        'failed' => 'مردود',
-                        'in_progress' => 'در حال انجام',
-                        default => $state,
+                        'passed'     => '✅ قبول',
+                        'completed'  => '✔ تکمیل‌شده',
+                        'processing' => '⏳ در حال پردازش',
+                        'failed'     => '❌ مردود',
+                        'in_progress'=> '🔄 در حال انجام',
+                        default      => $state,
                     }),
-                Tables\Columns\TextColumn::make('score')
-                    ->label('نمره')
-                    ->formatStateUsing(function (ExamAttempt $record): string {
+                Tables\Columns\TextColumn::make('score_display')
+                    ->label('نمره (صحیح/کل)')
+                    ->state(function (ExamAttempt $record): string {
                         $total = count($record->exam->selected_question_ids ?? []);
-
-                        if ($record->score === null) {
-                            return '-';
-                        }
-
-                        return $record->score . ' از ' . $total;
+                        if ($record->score === null) return '-';
+                        $wrong = $total - $record->score;
+                        return $record->score . ' صحیح / ' . $wrong . ' غلط / ' . $total . ' کل';
+                    }),
+                Tables\Columns\TextColumn::make('percentage')
+                    ->label('درصد')
+                    ->state(function (ExamAttempt $record): string {
+                        $total = count($record->exam->selected_question_ids ?? []);
+                        if ($record->score === null || $total === 0) return '-';
+                        return round(($record->score / $total) * 100, 1) . '%';
+                    })
+                    ->badge()
+                    ->color(function (ExamAttempt $record): string {
+                        $total = count($record->exam->selected_question_ids ?? []);
+                        if ($record->score === null || $total === 0) return 'gray';
+                        $pct = ($record->score / $total) * 100;
+                        return $pct >= ($record->exam->passing_score ?? 50) ? 'success' : 'danger';
+                    }),
+                Tables\Columns\TextColumn::make('duration')
+                    ->label('مدت آزمون')
+                    ->state(function (ExamAttempt $record): string {
+                        if (!$record->started_at || !$record->finished_at) return '-';
+                        $mins = $record->started_at->diffInMinutes($record->finished_at);
+                        $secs = $record->started_at->diffInSeconds($record->finished_at) % 60;
+                        return $mins . 'دقیقه ' . $secs . 'ثانیه';
                     }),
                 Tables\Columns\TextColumn::make('started_at')
                     ->label('زمان شروع')
@@ -75,23 +94,25 @@ class AttemptsRelationManager extends RelationManager
                     ->formatStateUsing(fn ($state) => $state ? \Morilog\Jalali\Jalalian::fromCarbon($state)->format('Y/m/d H:i') : '-')
                     ->sortable(),
             ])
+            ->defaultSort('started_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->label('وضعیت')
                     ->options([
-                        'in_progress' => 'در حال انجام',
-                        'processing' => 'در حال پردازش',
-                        'completed' => 'تکمیل‌شده',
-                        'passed' => 'قبول',
-                        'failed' => 'مردود',
+                        'passed'     => '✅ قبول',
+                        'failed'     => '❌ مردود',
+                        'completed'  => '✔ تکمیل‌شده',
+                        'processing' => '⏳ در حال پردازش',
+                        'in_progress'=> '🔄 در حال انجام',
                     ]),
             ])
             ->actions([
                 Tables\Actions\Action::make('view_details')
                     ->label('جزئیات پاسخ‌ها')
-                    ->icon('heroicon-o-eye')
+                    ->icon('heroicon-o-document-magnifying-glass')
                     ->color('info')
-                    ->modalHeading('جزئیات تلاش کاربر')
+                    ->modalHeading(fn (ExamAttempt $record): string =>
+                        'پاسخ‌های ' . trim(($record->user->name ?? '') . ' ' . ($record->user->family ?? '')))
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('بستن')
                     ->modalWidth('5xl')
@@ -105,21 +126,21 @@ class AttemptsRelationManager extends RelationManager
                     ->visible(fn (ExamAttempt $record): bool => $record->status === 'in_progress')
                     ->requiresConfirmation()
                     ->modalHeading('اتمام اجباری آزمون')
-                    ->modalDescription('آیا مطمئن هستید؟ پاسخ‌های ثبت‌شده تا این لحظه پردازش و نمره‌گذاری می‌شوند.')
+                    ->modalDescription('پاسخ‌های ثبت‌شده تا این لحظه پردازش و نمره‌گذاری می‌شوند.')
                     ->modalSubmitActionLabel('بله، اتمام دهید')
                     ->action(function (ExamAttempt $record): void {
                         $record->update([
                             'finished_at' => $record->finished_at ?? now(),
-                            'status' => 'processing',
+                            'status'      => 'processing',
                         ]);
                         \App\Jobs\ProcessExamAttempt::dispatch($record);
                     })
-                    ->successNotificationTitle('آزمون با موفقیت به پایان رسید و در صف پردازش قرار گرفت.'),
+                    ->successNotificationTitle('آزمون در صف پردازش قرار گرفت.'),
                 Tables\Actions\DeleteAction::make()
                     ->label('ریست (حذف)')
                     ->icon('heroicon-o-trash')
                     ->modalHeading('حذف تلاش کاربر')
-                    ->modalDescription('آیا مطمئن هستید؟ با حذف این مورد، تمام پاسخ‌های کاربر پاک شده و می‌تواند مجدداً در آزمون شرکت کند.')
+                    ->modalDescription('با حذف این مورد، تمام پاسخ‌های کاربر پاک شده و می‌تواند مجدداً در آزمون شرکت کند.')
                     ->modalSubmitActionLabel('حذف و ریست'),
             ]);
     }
