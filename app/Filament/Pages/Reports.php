@@ -101,40 +101,14 @@ class Reports extends Page implements HasTable
 
     protected function makeLocalizedDatePicker(string $name, string $label, Carbon $default)
     {
-        $jalaliComponentClasses = [
-            'Bezhansalleh\\FilamentJalaliDatepicker\\Forms\\Components\\JalaliDatePicker',
-            'Ariaieboy\\FilamentJalaliDatetimepicker\\Forms\\Components\\JalaliDatePicker',
-        ];
-
-        foreach ($jalaliComponentClasses as $componentClass) {
-            if (class_exists($componentClass)) {
-                $component = call_user_func([$componentClass, 'make'], $name)
-                    ->label($label)
-                    ->required()
-                    ->native(false)
-                    ->format('Y-m-d')
-                    ->displayFormat('Y/m/d')
-                    ->default($default->format('Y-m-d'));
-
-                return $component;
-            }
-        }
-
-        $component = Forms\Components\DatePicker::make($name)
+        return Forms\Components\DatePicker::make($name)
             ->label($label)
             ->native(false)
             ->format('Y-m-d')
             ->displayFormat('Y/m/d')
             ->required()
-            ->default($default->format('Y-m-d'));
-
-        try {
-            $component = $component->jalali();
-        } catch (\Throwable $exception) {
-            // Jalali macro is not registered, keep default DatePicker.
-        }
-
-        return $component;
+            ->default($default->format('Y-m-d'))
+            ->jalali();
     }
     
     public function applyFilters(): void

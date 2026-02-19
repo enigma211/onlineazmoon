@@ -67,9 +67,11 @@ class ExamResource extends Resource
                 Forms\Components\Grid::make(2)
                     ->schema([
                         Forms\Components\DateTimePicker::make('start_time')
-                            ->label('زمان شروع'),
+                            ->label('زمان شروع')
+                            ->jalali(),
                         Forms\Components\DateTimePicker::make('end_time')
-                            ->label('زمان پایان'),
+                            ->label('زمان پایان')
+                            ->jalali(),
                     ]),
                 Forms\Components\Section::make('تنظیمات آزمون')
                     ->schema([
