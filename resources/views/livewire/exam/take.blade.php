@@ -98,9 +98,22 @@ new #[Layout('layouts.app')] class extends Component {
             $clientAnswers = [];
         }
 
+        // If clientAnswers is empty, fall back to $this->answers (synced via $wire.set on each selection)
+        // This handles the case where localStorage is blocked (e.g. Edge Tracking Prevention)
+        $sourceAnswers = !empty($clientAnswers) ? $clientAnswers : (array) $this->answers;
+
+        \Illuminate\Support\Facades\Log::info('Exam submission answers source', [
+            'exam_id' => $this->exam->id,
+            'client_answers_count' => count($clientAnswers),
+            'wire_answers_count' => count((array) $this->answers),
+            'source_answers' => $sourceAnswers,
+        ]);
+
         foreach ($this->questions as $question) {
-            // Check if answer exists in client submission
-            $answersToSave[$question->id] = $clientAnswers[$question->id] ?? null;
+            // Check if answer exists in source answers (try both string and int keys)
+            $answersToSave[$question->id] = $sourceAnswers[$question->id]
+                ?? $sourceAnswers[(string) $question->id]
+                ?? null;
         }
 
         if ($this->attempt) {
@@ -149,7 +162,11 @@ new #[Layout('layouts.app')] class extends Component {
                         }
                     },
                     async submitExam() {
-                        const rawAnswers = JSON.parse(JSON.stringify(this.answers));
+                        // Always prefer localStorage as source of truth (survives re-renders and timeout edge cases)
+                        const saved = localStorage.getItem('exam_{{ $exam->id }}_answers');
+                        const localAnswers = saved ? JSON.parse(saved) : {};
+                        // Merge: localStorage takes priority, fall back to in-memory answers
+                        const rawAnswers = Object.assign({}, JSON.parse(JSON.stringify(this.answers)), localAnswers);
                         console.log('Submitting exam...', rawAnswers);
                         
                         try {
@@ -170,7 +187,7 @@ new #[Layout('layouts.app')] class extends Component {
                             this.submitExam();
                         }, 3000);
                     }
-                }" x-init="loadLocal(); $watch('answers', () => saveLocal()); renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ] });"
+                }" x-init="loadLocal(); $watch('answers', (val) => { saveLocal(); $wire.set('answers', val); }); renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ] });"
                 @exam-timeout.window="handleTimeUp()">
 
                     <!-- Questions Carousel -->
