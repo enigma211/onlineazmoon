@@ -103,9 +103,14 @@
             {{ $attempt->finished_at ? \Morilog\Jalali\Jalalian::fromCarbon($attempt->finished_at)->format('Y/m/d H:i:s') : '-' }}
         </div>
         @if($attempt->started_at && $attempt->finished_at)
+        @php
+            $totalSec = (int) $attempt->started_at->diffInSeconds($attempt->finished_at);
+            $durMins  = (int) floor($totalSec / 60);
+            $durSecs  = $totalSec % 60;
+        @endphp
         <div>
             <span class="font-semibold text-gray-700">مدت:</span>
-            {{ $attempt->started_at->diffInMinutes($attempt->finished_at) }} دقیقه
+            {{ $durMins }} دقیقه {{ $durSecs }} ثانیه
         </div>
         @endif
     </div>

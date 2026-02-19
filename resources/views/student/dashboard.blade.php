@@ -103,11 +103,17 @@
                             @if($isFinalizedAttempt || $isTimedOutInProgress)
                                 <div class="@if($userAttempt->status === 'passed') bg-green-50 border-green-200 @elseif($userAttempt->status === 'failed') bg-red-50 border-red-200 @else bg-blue-50 border-blue-200 @endif rounded-lg p-2.5 sm:p-3 mb-3 sm:mb-4">
                                     <p class="text-xs sm:text-sm @if($userAttempt->status === 'passed') text-green-800 @elseif($userAttempt->status === 'failed') text-red-800 @else text-blue-800 @endif font-medium">
-                                        @if($userAttempt->status === 'passed') ✅ قبول شد
-                                        @elseif($userAttempt->status === 'failed') ❌ مردود شد
-                                        @elseif($isTimedOutInProgress) ⏰ زمان آزمون به پایان رسیده است
-                                        @else 📝 در حال بررسی
-                                        @endif - شما قبلاً در این آزمون شرکت کرده‌اید
+                                        @if($userAttempt->status === 'passed')
+                                            ✅ شما در این آزمون قبول شدید
+                                        @elseif($userAttempt->status === 'failed')
+                                            ❌ شما در این آزمون مردود شدید
+                                        @elseif($isTimedOutInProgress)
+                                            ⏰ زمان آزمون شما به پایان رسیده است
+                                        @elseif($userAttempt->status === 'processing')
+                                            ⏳ پاسخ‌های شما ثبت شد و در حال پردازش است
+                                        @else
+                                            📝 شما در این آزمون شرکت کرده‌اید
+                                        @endif
                                     </p>
                                     @if($userAttempt->score !== null)
                                         <p class="text-xs @if($userAttempt->status === 'passed') text-green-600 @elseif($userAttempt->status === 'failed') text-red-600 @else text-blue-600 @endif mt-1">

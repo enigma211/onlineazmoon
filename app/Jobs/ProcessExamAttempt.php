@@ -26,30 +26,30 @@ class ProcessExamAttempt implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->examAttempt->load('exam.questions');
+        $this->examAttempt->load('exam');
         $exam = $this->examAttempt->exam;
-        $questions = $exam->questions;
+        $questions = $exam->getExamQuestions();
         $answers = $this->examAttempt->answers ?? [];
         $correctCount = 0;
         $totalQuestions = $questions->count();
 
         foreach ($questions as $question) {
-            if (isset($answers[$question->id]) && $answers[$question->id] == $question->correct_option) {
+            $selected = $answers[$question->id] ?? $answers[(string) $question->id] ?? null;
+            if ($selected !== null && (int) $selected === (int) $question->correct_option) {
                 $correctCount++;
             }
         }
 
-        // Calculate score (number of correct answers)
         $score = $correctCount;
 
-        // Determine status based on passing score
         $status = 'completed';
         if ($exam->hasPassingScore()) {
-            $status = $exam->isPassingScore($score) ? 'passed' : 'failed';
+            $percentage = $totalQuestions > 0 ? ($score / $totalQuestions) * 100 : 0;
+            $status = $percentage >= $exam->passing_score ? 'passed' : 'failed';
         }
 
         $this->examAttempt->update([
-            'score' => $score,
+            'score'  => $score,
             'status' => $status,
         ]);
     }

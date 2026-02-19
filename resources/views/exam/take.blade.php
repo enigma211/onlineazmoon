@@ -69,26 +69,23 @@
                     </div>
 
                     {{-- Navigation --}}
-                    <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-6 sm:mt-8 pt-4 border-t">
+                    <div class="flex items-center justify-between gap-3 mt-6 sm:mt-8 pt-4 border-t">
                         <button type="button" id="btn-prev"
                                 onclick="changeStep(-1)"
-                                class="hidden w-full sm:w-32 px-4 py-2 sm:py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base order-2 sm:order-1 flex justify-center items-center">
-                            قبلی
+                                class="hidden w-32 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium justify-center items-center">
+                            ← قبلی
                         </button>
-
+                        <div class="flex-1"></div>
                         <button type="button" id="btn-next"
                                 onclick="changeStep(1)"
-                                class="w-full sm:w-32 px-4 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm sm:text-base order-1 sm:order-2 flex justify-center items-center">
-                            بعدی
+                                class="w-32 px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium flex justify-center items-center">
+                            بعدی →
                         </button>
-
-                        <div id="btn-submit-wrap" class="hidden w-full sm:w-auto order-1 sm:order-3">
-                            <button type="button" id="btn-submit"
-                                    onclick="submitExam()"
-                                    class="w-full sm:w-40 px-4 py-2 sm:py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center text-sm sm:text-base">
-                                پایان آزمون
-                            </button>
-                        </div>
+                        <button type="button" id="btn-submit"
+                                onclick="submitExam()"
+                                class="hidden w-32 px-4 py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors text-sm flex justify-center items-center">
+                            پایان آزمون
+                        </button>
                     </div>
 
                     {{-- Progress bar --}}
@@ -150,14 +147,17 @@
     }
 
     function updateNav() {
-        var prev = document.getElementById('btn-prev');
-        var next = document.getElementById('btn-next');
-        var submitWrap = document.getElementById('btn-submit-wrap');
-        var bar  = document.getElementById('progress-bar');
+        var prev   = document.getElementById('btn-prev');
+        var next   = document.getElementById('btn-next');
+        var submit = document.getElementById('btn-submit');
+        var bar    = document.getElementById('progress-bar');
+        var isLast = currentStep === totalSteps - 1;
 
         prev.classList.toggle('hidden', currentStep === 0);
-        next.classList.toggle('hidden', currentStep === totalSteps - 1);
-        submitWrap.classList.toggle('hidden', currentStep !== totalSteps - 1);
+        prev.classList.toggle('flex', currentStep !== 0);
+        next.classList.toggle('hidden', isLast);
+        submit.classList.toggle('hidden', !isLast);
+        submit.classList.toggle('flex', isLast);
         bar.style.width = ((currentStep + 1) / totalSteps * 100) + '%';
     }
 

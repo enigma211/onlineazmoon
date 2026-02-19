@@ -81,9 +81,10 @@ class AttemptsRelationManager extends RelationManager
                     ->label('مدت آزمون')
                     ->state(function (ExamAttempt $record): string {
                         if (!$record->started_at || !$record->finished_at) return '-';
-                        $mins = $record->started_at->diffInMinutes($record->finished_at);
-                        $secs = $record->started_at->diffInSeconds($record->finished_at) % 60;
-                        return $mins . 'دقیقه ' . $secs . 'ثانیه';
+                        $totalSecs = (int) $record->started_at->diffInSeconds($record->finished_at);
+                        $mins = (int) floor($totalSecs / 60);
+                        $secs = $totalSecs % 60;
+                        return $mins . ' دقیقه ' . $secs . ' ثانیه';
                     }),
                 Tables\Columns\TextColumn::make('started_at')
                     ->label('زمان شروع')
