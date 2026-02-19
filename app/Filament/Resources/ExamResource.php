@@ -293,6 +293,7 @@ class ExamResource extends Resource
                                 ]
                             );
                         }),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([

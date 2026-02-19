@@ -86,10 +86,6 @@ class UserResource extends Resource
                     ->label('کد ملی')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاریخ ثبت‌نام')
-                    ->dateTime('Y/m/d')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('تاریخ ویرایش')
                     ->formatStateUsing(fn ($state) => $state ? \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($state))->format('Y/m/d H:i') : null)
@@ -138,16 +134,24 @@ class UserResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\Action::make('view_details')
-                    ->label('مشاهده جزئیات')
-                    ->icon('heroicon-o-eye')
-                    ->color('info')
-                    ->modalContent(fn ($record) => view('filament.modals.user-details', ['user' => $record])),
                 Tables\Actions\Action::make('view_exams')
                     ->label('تاریخچه آزمون‌ها')
                     ->icon('heroicon-o-academic-cap')
                     ->color('warning')
                     ->modalContent(fn ($record) => view('filament.modals.user-exam-history', ['user' => $record])),
+                Tables\Actions\Action::make('delete_exam_history')
+                    ->label('پاک کردن تاریخچه')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('پاک کردن تاریخچه آزمون‌ها')
+                    ->modalDescription(fn ($record) => 'آیا مطمئن هستید که می‌خواهید تمام تاریخچه آزمون‌های ' . $record->name . ' ' . $record->family . ' را پاک کنید؟ این عمل قابل بازگشت نیست.')
+                    ->modalSubmitActionLabel('بله، پاک کن')
+                    ->visible(fn ($record) => $record->examAttempts()->exists())
+                    ->action(function ($record): void {
+                        $record->examAttempts()->delete();
+                    })
+                    ->successNotificationTitle('تاریخچه آزمون‌ها با موفقیت پاک شد'),
                 Tables\Actions\EditAction::make(),
             ])
             ->headerActions([
