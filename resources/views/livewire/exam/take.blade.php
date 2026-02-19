@@ -163,7 +163,8 @@ new #[Layout('layouts.app')] class extends Component {
                     },
                     async submitExam() {
                         // Always prefer localStorage as source of truth (survives re-renders and timeout edge cases)
-                        const saved = localStorage.getItem('exam_{{ $exam->id }}_answers');
+                        let saved = null;
+                        try { saved = localStorage.getItem('exam_{{ $exam->id }}_answers'); } catch(e) {}
                         const localAnswers = saved ? JSON.parse(saved) : {};
                         // Merge: localStorage takes priority, fall back to in-memory answers
                         const rawAnswers = Object.assign({}, JSON.parse(JSON.stringify(this.answers)), localAnswers);
@@ -174,8 +175,9 @@ new #[Layout('layouts.app')] class extends Component {
                             await $wire.call('submit', rawAnswers);
                             console.log('Livewire submit call finished');
                             
-                            // Only clear local storage if successful
-                            localStorage.removeItem('exam_{{ $exam->id }}_answers');
+                            // Force JS redirect as fallback (in case Livewire navigate redirect doesn't trigger)
+                            try { localStorage.removeItem('exam_{{ $exam->id }}_answers'); } catch(e) {}
+                            window.location.href = '{{ route('dashboard') }}';
                         } catch (e) {
                             console.error('Submit error:', e);
                             alert('خطا در ثبت آزمون. لطفا مجددا تلاش کنید یا اتصال اینترنت خود را بررسی نمایید.');
