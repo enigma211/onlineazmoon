@@ -45,6 +45,19 @@ new #[Layout('layouts.app')] class extends Component {
             $startedAt = $this->attempt->started_at ?? $now;
             $elapsed = $startedAt->diffInSeconds($now);
             $this->timeLeft = max(0, ($exam->duration_minutes * 60) - $elapsed);
+
+            // If time has already expired for an in_progress attempt, force-submit it now
+            if ($this->timeLeft <= 0) {
+                $this->attempt->update([
+                    'finished_at' => now(),
+                    'answers' => $this->attempt->answers ?? [],
+                    'status' => 'processing',
+                ]);
+                \App\Jobs\ProcessExamAttempt::dispatch($this->attempt);
+                session()->flash('status', 'زمان آزمون شما به پایان رسیده بود و پاسخ‌ها ثبت شد.');
+                $this->redirect(route('dashboard'));
+                return;
+            }
         } else {
             // Start new attempt
             $this->attempt = ExamAttempt::create([
@@ -57,9 +70,8 @@ new #[Layout('layouts.app')] class extends Component {
         }
 
         if ($this->timeLeft <= 0) {
-             // Time expired
-             $this->submit([]); // Force submit empty? Or just redirect
-             return;
+            $this->redirect(route('dashboard'));
+            return;
         }
         
         // Load questions (Eager Loading / Bulk Load)
@@ -161,7 +173,10 @@ new #[Layout('layouts.app')] class extends Component {
                             this.answers = JSON.parse(saved);
                         }
                     },
+                    submitting: false,
                     async submitExam() {
+                        if (this.submitting) return;
+                        this.submitting = true;
                         // Always prefer localStorage as source of truth (survives re-renders and timeout edge cases)
                         let saved = null;
                         try { saved = localStorage.getItem('exam_{{ $exam->id }}_answers'); } catch(e) {}
@@ -171,15 +186,13 @@ new #[Layout('layouts.app')] class extends Component {
                         console.log('Submitting exam...', rawAnswers);
                         
                         try {
-                            // Call Livewire method explicitly
+                            // Call Livewire method - it handles redirect on success
                             await $wire.call('submit', rawAnswers);
                             console.log('Livewire submit call finished');
-                            
-                            // Force JS redirect as fallback (in case Livewire navigate redirect doesn't trigger)
                             try { localStorage.removeItem('exam_{{ $exam->id }}_answers'); } catch(e) {}
-                            window.location.href = '{{ route('dashboard') }}';
                         } catch (e) {
                             console.error('Submit error:', e);
+                            this.submitting = false;
                             alert('خطا در ثبت آزمون. لطفا مجددا تلاش کنید یا اتصال اینترنت خود را بررسی نمایید.');
                         }
                     },

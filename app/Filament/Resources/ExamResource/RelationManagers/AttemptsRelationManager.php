@@ -98,6 +98,23 @@ class AttemptsRelationManager extends RelationManager
                     ->modalContent(fn (ExamAttempt $record) => view('filament.modals.exam-attempt-details', [
                         'attempt' => $record->loadMissing(['user', 'exam']),
                     ])),
+                Tables\Actions\Action::make('force_complete')
+                    ->label('اتمام اجباری')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('warning')
+                    ->visible(fn (ExamAttempt $record): bool => $record->status === 'in_progress')
+                    ->requiresConfirmation()
+                    ->modalHeading('اتمام اجباری آزمون')
+                    ->modalDescription('آیا مطمئن هستید؟ پاسخ‌های ثبت‌شده تا این لحظه پردازش و نمره‌گذاری می‌شوند.')
+                    ->modalSubmitActionLabel('بله، اتمام دهید')
+                    ->action(function (ExamAttempt $record): void {
+                        $record->update([
+                            'finished_at' => $record->finished_at ?? now(),
+                            'status' => 'processing',
+                        ]);
+                        \App\Jobs\ProcessExamAttempt::dispatch($record);
+                    })
+                    ->successNotificationTitle('آزمون با موفقیت به پایان رسید و در صف پردازش قرار گرفت.'),
                 Tables\Actions\DeleteAction::make()
                     ->label('ریست (حذف)')
                     ->icon('heroicon-o-trash')
