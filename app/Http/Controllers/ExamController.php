@@ -7,6 +7,7 @@ use App\Models\Exam;
 use App\Models\ExamAttempt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ExamController extends Controller
 {
@@ -72,33 +73,42 @@ class ExamController extends Controller
     {
         $user = Auth::user();
 
-        $attempt = ExamAttempt::where('user_id', $user->id)
-            ->where('exam_id', $exam->id)
-            ->where('status', 'in_progress')
-            ->whereNull('finished_at')
-            ->latest('created_at')
-            ->first();
+        $result = DB::transaction(function () use ($request, $exam, $user) {
+            $attempt = ExamAttempt::where('user_id', $user->id)
+                ->where('exam_id', $exam->id)
+                ->where('status', 'in_progress')
+                ->whereNull('finished_at')
+                ->latest('created_at')
+                ->lockForUpdate()
+                ->first();
 
-        if (!$attempt) {
+            if (!$attempt) {
+                return null;
+            }
+
+            $rawAnswers = $request->input('answers', []);
+
+            $answersToSave = [];
+            foreach ($exam->getExamQuestions() as $question) {
+                $answersToSave[$question->id] = isset($rawAnswers[$question->id])
+                    ? (int) $rawAnswers[$question->id]
+                    : null;
+            }
+
+            $attempt->update([
+                'finished_at' => now(),
+                'answers'     => $answersToSave,
+                'status'      => 'processing',
+            ]);
+
+            return $attempt;
+        });
+
+        if (!$result) {
             return redirect()->route('dashboard')->with('status', 'آزمون قبلاً ثبت شده است.');
         }
 
-        $rawAnswers = $request->input('answers', []);
-
-        $answersToSave = [];
-        foreach ($exam->getExamQuestions() as $question) {
-            $answersToSave[$question->id] = isset($rawAnswers[$question->id])
-                ? (int) $rawAnswers[$question->id]
-                : null;
-        }
-
-        $attempt->update([
-            'finished_at' => now(),
-            'answers'     => $answersToSave,
-            'status'      => 'processing',
-        ]);
-
-        ProcessExamAttempt::dispatch($attempt);
+        ProcessExamAttempt::dispatch($result);
 
         return redirect()->route('dashboard')->with('status', 'پاسخ‌های آزمون با موفقیت ثبت شد و نتیجه در حال پردازش است.');
     }

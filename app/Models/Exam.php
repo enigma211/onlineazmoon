@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Exam extends Model
 {
@@ -15,6 +16,10 @@ class Exam extends Model
             $exam->is_active ??= false;
             $exam->start_time ??= now();
             $exam->end_time ??= $exam->start_time;
+        });
+
+        static::saved(function (Exam $exam): void {
+            Cache::forget("exam_{$exam->id}_questions");
         });
     }
 
@@ -124,8 +129,10 @@ class Exam extends Model
      */
     public function getExamQuestions()
     {
-        $questionIds = $this->getSelectedQuestionIdsAttribute();
-        return Question::whereIn('id', $questionIds)->get();
+        return Cache::remember("exam_{$this->id}_questions", 3600, function () {
+            $questionIds = $this->getSelectedQuestionIdsAttribute();
+            return Question::whereIn('id', $questionIds)->get();
+        });
     }
 
     /**

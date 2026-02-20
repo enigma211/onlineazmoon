@@ -21,20 +21,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('*', function ($view): void {
-            $settings = SiteSettings::all();
-            $siteDescription = config('app.description', '');
+        View::composer('*', static function ($view): void {
+            static $shared = null;
 
-            if (array_key_exists('site_description', $settings)) {
-                $description = $settings['site_description'];
-                $siteDescription = is_string($description) ? trim($description) : '';
+            if ($shared === null) {
+                $settings = SiteSettings::all();
+                $siteDescription = config('app.description', '');
+
+                if (array_key_exists('site_description', $settings)) {
+                    $description = $settings['site_description'];
+                    $siteDescription = is_string($description) ? trim($description) : '';
+                }
+
+                $shared = [
+                    'siteSettings'    => $settings,
+                    'siteName'        => $settings['site_name'] ?? config('app.name', 'سامانه آزمون‌ها'),
+                    'siteDescription' => $siteDescription,
+                    'siteLogoUrl'     => SiteSettings::logoUrl(),
+                    'siteFaviconUrl'  => SiteSettings::faviconUrl(),
+                ];
             }
 
-            $view->with('siteSettings', $settings);
-            $view->with('siteName', $settings['site_name'] ?? config('app.name', 'سامانه آزمون‌ها'));
-            $view->with('siteDescription', $siteDescription);
-            $view->with('siteLogoUrl', SiteSettings::logoUrl());
-            $view->with('siteFaviconUrl', SiteSettings::faviconUrl());
+            $view->with($shared);
         });
     }
 }

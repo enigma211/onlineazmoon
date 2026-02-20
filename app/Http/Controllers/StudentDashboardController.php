@@ -13,10 +13,10 @@ class StudentDashboardController extends Controller
         
         // Show only active exams to students
         $availableExams = Exam::active()
+            ->withCount('questions')
             ->with([
-                'questions',
                 'attempts' => function ($query) use ($userId) {
-                    $query->where('user_id', $userId)->latest('created_at');
+                    $query->where('user_id', $userId)->latest('created_at')->limit(1);
                 },
             ])
             ->get();
@@ -25,10 +25,10 @@ class StudentDashboardController extends Controller
         $pastExams = Exam::whereHas('attempts', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
+            ->withCount('questions')
             ->with([
-                'questions',
                 'attempts' => function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
+                    $query->where('user_id', $userId)->latest('created_at')->limit(1);
                 },
             ])
             ->latest('created_at')
