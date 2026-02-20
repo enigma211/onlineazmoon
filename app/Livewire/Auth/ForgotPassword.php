@@ -39,8 +39,8 @@ class ForgotPassword extends Component
         // Generate a 4-digit OTP
         $code = rand(1000, 9999);
         
-        // Cache the OTP for 3 minutes
-        Cache::put("otp_{$this->mobile}", $code, now()->addMinutes(3));
+        // Cache the OTP for 7 minutes
+        Cache::put("otp_{$this->mobile}", $code, now()->addMinutes(7));
 
         // Send OTP via MeliPayamak
         if (config('melipayamak.username') && config('melipayamak.password')) {

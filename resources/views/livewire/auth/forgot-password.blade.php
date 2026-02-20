@@ -44,6 +44,9 @@
         @if($step === 2)
             <div class="text-center mb-4 text-sm text-gray-600">
                 کد تایید به شماره <strong class="text-gray-900" dir="ltr">{{ $mobile }}</strong> ارسال شد.
+                <div class="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-700 font-semibold">
+                    لطفا شکیبا باشید. به علت مشکلات شبکه پیامکی، دریافت کد ممکن است چند دقیقه زمان ببرد.
+                </div>
             </div>
 
             <div>
