@@ -36,13 +36,14 @@ class SMS
     public static function sendOTP(string $to, string $code): bool
     {
         try {
-            $sms = Melipayamak::sms();
+            // به دلیل عدم وجود SoapClient در سرور، از REST استفاده می‌کنیم
+            $sms = Melipayamak::sms('rest');
             
             // استفاده از BODY_ID که شما تنظیم کردید
             $bodyId = env('MELIPAYAMAK_OTP_BODY_ID', '429194'); 
             
-            // متد sendByBaseNumber پارامتر اول را به صورت آرایه دریافت می‌کند برای متغیرهای پترن (مثل {0})
-            $response = $sms->sendByBaseNumber([$code], $to, $bodyId);
+            // در متد REST ملی پیامک، متغیرها باید به صورت یک رشته (String) متصل شده با سمیکالون (;) ارسال شوند
+            $response = $sms->sendByBaseNumber($code, $to, $bodyId);
             
             Log::info("OTP SMS sent to {$to}", ['code' => $code, 'response' => $response]);
             return true;
