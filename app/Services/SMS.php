@@ -38,14 +38,11 @@ class SMS
         try {
             $sms = Melipayamak::sms();
             
-            // You MUST create a pattern in your Melipayamak panel
-            // Example pattern: "کد تایید شما: {0}"
-            // Replace the pattern ID below with your actual pattern ID
-            $patternId = env('MELIPAYAMAK_OTP_PATTERN_ID', '12345'); 
+            // استفاده از BODY_ID که شما تنظیم کردید
+            $bodyId = env('MELIPAYAMAK_OTP_BODY_ID', '429194'); 
             
-            // The method might differ slightly based on the exact melipayamak/laravel version
-            // Usually it's sendByBaseNumber or similar. We'll use the standard shared method.
-            $response = $sms->sendByBaseNumber($code, $to, $patternId);
+            // در متد sendByBaseNumber پارامتر اول باید متن یا آرایه‌ای از متغیرها باشد
+            $response = $sms->sendByBaseNumber([$code], $to, $bodyId);
             
             Log::info("OTP SMS sent to {$to}", ['code' => $code, 'response' => $response]);
             return true;
