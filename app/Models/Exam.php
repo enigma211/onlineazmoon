@@ -70,7 +70,7 @@ class Exam extends Model
             return 0; // No passing requirement
         }
 
-        $totalQuestions = $this->questions->count();
+        $totalQuestions = count($this->getSelectedQuestionIdsAttribute());
         if ($totalQuestions === 0) {
             return 0;
         }
@@ -87,7 +87,7 @@ class Exam extends Model
             return true; // No passing requirement, always pass
         }
 
-        $totalQuestions = $this->questions->count();
+        $totalQuestions = count($this->getSelectedQuestionIdsAttribute());
         if ($totalQuestions === 0) {
             return false;
         }
@@ -106,7 +106,7 @@ class Exam extends Model
         }
 
         $minimumCorrect = $this->getMinimumCorrectAnswers();
-        $totalQuestions = $this->questions->count();
+        $totalQuestions = count($this->getSelectedQuestionIdsAttribute());
 
         return "حداقل {$minimumCorrect} پاسخ صحیح از {$totalQuestions} سوال ({$this->passing_score}%)";
     }
