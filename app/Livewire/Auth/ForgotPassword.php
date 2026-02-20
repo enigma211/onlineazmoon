@@ -43,7 +43,7 @@ class ForgotPassword extends Component
         Cache::put("otp_{$this->mobile}", $code, now()->addMinutes(3));
 
         // Send OTP via MeliPayamak
-        if (env('MELIPAYAMAK_USERNAME') && env('MELIPAYAMAK_PASSWORD')) {
+        if (config('melipayamak.username') && config('melipayamak.password')) {
             SMS::sendOTP($this->mobile, (string) $code);
         } else {
             Log::info("OTP for {$this->mobile} is: {$code} (SMS skipped due to missing config)");

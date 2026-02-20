@@ -41,7 +41,7 @@ class SMS
             // استفاده از BODY_ID که شما تنظیم کردید
             $bodyId = env('MELIPAYAMAK_OTP_BODY_ID', '429194'); 
             
-            // در متد sendByBaseNumber پارامتر اول باید متن یا آرایه‌ای از متغیرها باشد
+            // متد sendByBaseNumber پارامتر اول را به صورت آرایه دریافت می‌کند برای متغیرهای پترن (مثل {0})
             $response = $sms->sendByBaseNumber([$code], $to, $bodyId);
             
             Log::info("OTP SMS sent to {$to}", ['code' => $code, 'response' => $response]);
